@@ -1,7 +1,0 @@
-{
-  "routes": {
-    "/idea": {},
-    "/idea/signin": {},
-    "/idea/signup": {}
-  }
-}
