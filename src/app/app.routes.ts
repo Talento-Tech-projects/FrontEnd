@@ -1,3 +1,7 @@
 import { Routes } from '@angular/router';
-
-export const routes: Routes = [];
+import { Signin } from './sites/signin/signin';
+import { MainLayout } from './main-layout/main-layout';
+export const routes: Routes = [
+    {path: 'signin', component: Signin},
+    {path: '', component: MainLayout}
+];
