@@ -23,6 +23,7 @@ export class Header {
   }
   
   isScrollingDown = false;
+  isMobileMenuOpen = false;
   private lastScrollY = 0;
 
   // Use @HostListener to listen for the window's scroll event
@@ -44,5 +45,9 @@ export class Header {
 
     // Update the last scroll position
     this.lastScrollY = currentScrollY;
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 }
