@@ -14,25 +14,25 @@
         <nav class="mt-6">
             <ul class="space-y-1">
                 <li>
-                    <a routerLink="/projects/all" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('all')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'all'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2h19L21 4.5l-19-1.5z"></path><path d="M19 19.5v-13"></path><path d="M5 19.5v-13"></path><path d="M2 19.5h20"></path></svg>
                         <span>All projects</span>
                     </a>
                 </li>
                 <li>
-                    <a routerLink="/projects/your" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('your')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'your'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.4 5.4 0 017.5 3c1.74 0 3.41.81 4.5 2.09A5.4 5.4 0 0116.5 3c3.04 0 5.5 2.59 5.5 6.07 0 3.4-3.4 6.47-8.55 11.51L12 21.35z"></path></svg>
                         <span>Your projects</span>
                     </a>
                 </li>
                 <li>
-                    <a routerLink="/projects/shared" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('shared')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'shared'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8l3 3-3 3"></path><path d="M17 11h-2"></path></svg>
                         <span>Shared with you</span>
                     </a>
                 </li>
                 <li>
-                    <a routerLink="/projects/trashed" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('trashed')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'trashed'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                         <span>Trashed projects</span>
                     </a>
@@ -82,7 +82,7 @@
             </div>
         </div>
 
-        <div *ngFor="let project of projects" class="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-300">
+        <div *ngFor="let project of filterProjects" class="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-300">
             <span class="text-gray-800">{{ project.title }}</span>
             <span class="text-gray-600">{{ project.owner }}</span>
             <span class="text-gray-600">{{ project.lastModified }}</span>
@@ -106,20 +106,10 @@
   (projectUpdated)="handleProjectUpdated($event)">
 </app-new-project>     
 
-<div *ngIf="showConfirmationModal" class="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center p-4 z-50">
-    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-center" (click)="$event.stopPropagation()">
-        <h3 class="text-lg font-bold">Confirm Deletion</h3>
-        <div class="mt-2 px-7 py-3">
-            <p class="text-sm text-gray-500">Are you sure you want to delete this project? This action cannot be undone.</p>
-        </div>
-        <div class="mt-4 flex justify-center gap-4">
-            <button (click)="cancelDelete()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 transition-colors duration-300">
-                Cancel
-            </button>
-            <button (click)="confirmDelete()" class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300">
-                Yes, delete it
-            </button>
-        </div>
-    </div>
-
-</div>
+<app-delete-project 
+  [visible]="showConfirmationModal" 
+  (close)="closeNewProject()"
+  [projectId]="projectToDeleteId"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()">
+</app-delete-project>     

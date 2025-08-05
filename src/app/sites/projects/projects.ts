@@ -2,14 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router'; 
 import { NewProject } from '../new-project/new-project';
 import { CommonModule } from '@angular/common';
+import { DeleteProject } from '../delete-project/delete-project';
 
 
 
-  interface Project {
+interface Project {
     id: number;
     title: string;
     owner: string;
     lastModified: string; 
+    isShared: boolean;
+    isTrashed: boolean;
   }
 
 @Component({
@@ -18,25 +21,27 @@ import { CommonModule } from '@angular/common';
   imports: [
     RouterModule, 
     NewProject,
-    CommonModule
+    CommonModule,
+    DeleteProject
   ],
   templateUrl: './projects.html',
   styleUrl: './projects.css'
 })
 export class Projects implements OnInit{
+  
   showModal: boolean = false;
 
   currentUser: string = 'Thomas'; 
 
   projects: Project[] = [
-    { id: 1, title: 'Website Redesign', owner: 'Thomas', lastModified: '2025-08-01' },
-    { id: 2, title: 'Mobile App Concept', owner: 'Jane', lastModified: '2025-07-28' },
-    { id: 3, title: 'Marketing Campaign Plan', owner: 'Thomas', lastModified: '2025-08-05' },
-    { id: 4, title: 'Database Migration', owner: 'Mike', lastModified: '2025-07-25' },
-    { id: 5, title: 'QA Testing Protocol', owner: 'Jane', lastModified: '2025-08-03' }
+    { id: 1, title: 'Website Redesign', owner: 'Thomas', lastModified: '2025-08-01', isShared: false, isTrashed: false },
+    { id: 2, title: 'Mobile App Concept', owner: 'Jane', lastModified: '2025-07-28', isShared: false, isTrashed: false },
+    { id: 3, title: 'Marketing Campaign Plan', owner: 'Thomas', lastModified: '2025-08-05', isShared: false, isTrashed: true },
+    { id: 4, title: 'Database Migration', owner: 'Mike', lastModified: '2025-07-25', isShared: false, isTrashed: false },
+    { id: 5, title: 'QA Testing Protocol', owner: 'Jane', lastModified: '2025-08-03', isShared: false, isTrashed: false }
   ];
 
-  private filterProjects: Project[] = [
+  filterProjects: Project[] = [
   ];
   
   editingProject: { id: number, title: string, owner: string, lastModified: string } | null = null;
@@ -44,10 +49,17 @@ export class Projects implements OnInit{
   showConfirmationModal: boolean = false;
   projectToDeleteId: number | null = null;
 
-  private readonly STORAGE_KEY = 'projects-list';
+  currentFilter: string = 'all'; 
+  currentSearchTerm: string = ''; 
 
   ngOnInit(): void {
     this.filterProjects = [...this.projects];
+  }
+
+  setFilter(filterType: string): void {
+    console.log(`setFilter: Changing filter from '${this.currentFilter}' to '${filterType}'`);
+    this.currentFilter = filterType;
+    this.applyFilter(this.currentSearchTerm);
   }
 
 
@@ -72,7 +84,9 @@ export class Projects implements OnInit{
       id: this.projects.length > 0 ? Math.max(...this.projects.map(p => p.id)) + 1 : 1,
       title: newProjectData.title,
       owner: this.currentUser, // Correctly using the `currentUser` property
-      lastModified: new Date().toISOString().slice(0, 10)
+      lastModified: new Date().toISOString().slice(0, 10),
+      isShared: false,
+      isTrashed: false
     };
     this.projects.push(newProject);
     this.applyFilter('');
@@ -114,22 +128,45 @@ export class Projects implements OnInit{
 
 
   applyFilter(searchTerm: string): void {
-    const term = searchTerm.toLowerCase();
-    if (!term) {
-      this.filterProjects = [...this.projects];
-    } else {
-      this.filterProjects = this.projects.filter(project =>
+    this.currentSearchTerm = searchTerm; 
+
+    let tempProjects = [...this.projects]; 
+
+    console.log('--- applyFilter START ---');
+    console.log('Current Filter Type:', this.currentFilter);
+    console.log('Current Search Term:', this.currentSearchTerm);
+    console.log('Projects before category filter:', tempProjects.map(p => p.title + (p.isTrashed ? ' (Trashed)' : '') + (p.isShared ? ' (Shared)' : '') + (p.owner === this.currentUser ? ' (Owned)' : '')));
+
+    
+    if (this.currentFilter === 'your') {
+      
+      tempProjects = tempProjects.filter(p => p.owner === this.currentUser && !p.isTrashed);
+    } else if (this.currentFilter === 'shared') {
+     
+      tempProjects = tempProjects.filter(p => p.isShared && !p.isTrashed);
+    } else if (this.currentFilter === 'trashed') {
+      
+      tempProjects = tempProjects.filter(p => p.isTrashed);
+    } else { 
+      tempProjects = tempProjects.filter(p => !p.isTrashed);
+    }
+    console.log('Projects after category filter:', tempProjects.map(p => p.title + ' (Trashed: ' + p.isTrashed + ')'));    
+    const term = searchTerm.toLowerCase().trim();
+    if (term) {
+      tempProjects = tempProjects.filter(project =>
         project.title.toLowerCase().includes(term)
       );
     }
+
+    this.filterProjects = tempProjects;
+    console.log('Final filtered projects displayed:', this.filterProjects.map(p => p.title + (p.isTrashed ? ' (Trashed)' : '') + (p.isShared ? ' (Shared)' : '') + (p.owner === this.currentUser ? ' (Owned)' : '')));
+    console.log('--- applyFilter END ---')
   }
 
 
   filterProject(event: Event): void {
-
     const searchTerm = (event.target as HTMLInputElement).value;
     this.applyFilter(searchTerm);
-
   }
 
 }
