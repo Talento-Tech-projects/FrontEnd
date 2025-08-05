@@ -1,12 +1,11 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-new-project',
   standalone: true,
-  imports: [RouterOutlet,
+  imports: [
     FormsModule,
     CommonModule
   ],
