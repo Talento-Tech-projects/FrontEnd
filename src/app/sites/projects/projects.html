@@ -1,6 +1,6 @@
 <div class="grid h-screen grid-cols-1 md:grid-cols-[250px_1fr]">
     <aside class="bg-blue-300 py-4 flex items-center flex-col">
-        <button class="gap-2 bg-gradient-to-r from-blue-500 to-cyan-400 w-40 py-2 rounded-lg text-white cursor-pointer flex items-center justify-center mr-2 text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">
+        <button (click)="openNewProject()" class="gap-2 bg-gradient-to-r from-blue-500 to-cyan-400 w-40 py-2 rounded-lg text-white cursor-pointer flex items-center justify-center mr-2 text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">
             <svg class="w-4 h-4 mt-1" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ffffff" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>plus-circle</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-464.000000, -1087.000000)" fill="#ffffff"> <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z" id="plus-circle" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg>
             New project
         </button>
@@ -40,30 +40,66 @@
             <div class="flex items-center justify-between px-4">
                 <div class="flex items-center gap-2">
                     <div class="h-8 w-8 rounded-full bg-gray-400"></div>
-                    <span class="text-sm font-medium text-gray-700">User Name</span>
+                    <span class="text-sm font-medium text-gray-700">{{ currentUser }}</span>
                 </div>
             </div>
         </div>
     </aside>
-    <main class="bg-white py-6">
+    <main class="bg-white py-6 px-6 overflow-y-auto">
         <div class="flex items-center justify-between py-4">
 
-        </div>
-        <div>
-            <input type="text" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300">
-        </div>
-        <div class="flex items-center gap-4 ml-6">
-            <p class="text-sm text-gray-500 hidden sm:block">You're on the <span class="font-semibold">free plan</span></p>
-            <button class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg px-4 py-2 cursor-pointer text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">Upgrade</button>
-        </div>
-        <div class="flex items-center justify-between py-4 border-b border-gray-200">
-            <p class="text-lg font-semibold text-gray-800">5 projects</p>
+            <div class="relative flex-grow">
+                <input type="text" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300">
+            </div>
 
-            <button>
+            <div class="flex items-center gap-4 ml-6">
+                <p class="text-sm text-gray-500 hidden sm:block">You're on the <span class="font-semibold">free plan</span></p>
+                <button class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg px-4 py-2 cursor-pointer text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">Upgrade</button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+            <p class="text-lg font-semibold text-gray-800">{{ projects.length }} projects projects</p>
+
+            <button class="flex items-center gap-2 px-4 py-2 rounded-lg border-gray-300 text-gray-700 hove:bg-gray-100 transition-colors duration-300">
                 <span class="text-sm font-medium">
                     Actions
                 </span>
             </button>
         </div>
+
+        <div class="mt-6">
+            <div class="grid grid-cols-4 gap-4 px-4 py-2 text-sm font-semibold text-gray-500 border-b border-gray-200">
+                <span>Title</span>
+                <span>Owner</span>
+                <span class="flex items-center gap-1 cursor-pointer hover:text-gray-900 transition-colors duration-300">
+                    Last modified
+                </span>
+                <span>Actions</span>
+            </div>
+        </div>
+
+        <div *ngFor="let project of projects; let i = index" class="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-300">
+            <span class="text-gray-800">{{ project.title }}</span>
+            <span class="text-gray-600">{{ project.owner }}</span>
+            <span class="text-gray-600">{{ project.lastModified }}</span>
+            <div class="flex items-center gap-2">
+                <!-- Edit icon button -->
+                <button (click)="openEditProject(project)" class="text-gray-500 cursor-pointer hover:text-blue-500 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <!-- Delete icon button -->
+                <button (click)="deleteProject(i)" class="text-gray-500 cursor-pointer hover:text-red-500 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
+                </button>
+            </div>
+        </div>
     </main>
 </div>
+<app-new-project 
+  [visible]="showModal" 
+  (close)="closeNewProject()"
+  (projectCreated)="handleProjectCreated($event)"
+  [editingProject]="editingProject"
+  (projectUpdated)="handleProjectUpdated($event)">
+</app-new-project>     
