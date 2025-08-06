@@ -1,0 +1,35 @@
+<div *ngIf="visible" class="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-50 flex items-center justify-center p-4 font-sans">
+    <div class="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full transform transition-all scale-100 ease-out duration-300">
+        <div class="mb-6 border-b border-gray-200 pb-4">
+            <h2 class="text-2xl font-bold text-gray-800">{{ editingProject ? 'Edit Project' : 'Create a New Project' }}</h2>
+            <p class="text-sm text-gray-500 mt-1">{{ editingProject ? 'Update the project title.' : 'Fill in the details to create a new project.' }}</p>
+        </div>
+
+        <form #projectForm="ngForm" (ngSubmit)="saveProject()" id="newProjectForm">
+            <div class="space-y-4">
+                <div>
+                    <label for="projectTitle" class="block text-sm font-medium text-gray-700 mb-1">Project Title</label>
+                    <input type="text" [(ngModel)]="projectTitle" id="projectTitle" name="projectTitle" placeholder="e.g., My Awesome New Website" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                </div>
+                <div *ngIf="projectForm.submitted && projectForm.controls['projectTitle']?.errors?.['required']" class="text-red-500 text-xs mt-1">
+                    Project title is required.
+                </div>
+                <div *ngIf="projectForm.submitted && projectForm.controls['projectTitle']?.errors?.['minlength']" class="text-red-500 text-xs mt-1">
+                    Project title must be at least 3 characters.
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end gap-3">
+                <button (click)="onClose()" type="button" id="cancelButton"
+                        class="px-5 py-2 text-sm font-medium cursor-pointer text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                    Cancel
+                </button>
+                <button type="submit" id="createButton"
+                        class="px-5 py-2 text-sm font-medium cursor-pointer text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200">
+                    {{ editingProject ? 'Save Changes' : 'Create Project' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
