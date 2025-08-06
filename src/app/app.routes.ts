@@ -4,11 +4,13 @@ import { MainLayout } from './main-layout/main-layout';
 import { Signup } from './sites/signup/signup';
 import { Projects } from './sites/projects/projects';
 import { NewProject } from './sites/new-project/new-project';
+import { BeamAnalysis } from './sites/beam-analysis/beam-analysis';
 
 export const routes: Routes = [
     {path: 'signin', component: Signin},
     {path: '', component: MainLayout},
     {path: 'signup', component: Signup},
     {path: 'projects', component: Projects},
+    {path: 'beam-analysis', component: BeamAnalysis},
 
 ];

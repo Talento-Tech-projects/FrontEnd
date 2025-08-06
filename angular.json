@@ -29,7 +29,10 @@
             "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
-            }
+            },
+            "externalDependencies": [
+              "canvas"
+            ]
           },
           "configurations": {
             "production": {
@@ -87,6 +90,7 @@
         }
       }
     }
+
   },
   "cli": {
     "analytics": "77fbe7ff-4b0d-483d-bc07-a40225d28527"
