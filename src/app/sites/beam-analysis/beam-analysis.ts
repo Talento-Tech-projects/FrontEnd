@@ -1,31 +1,24 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { isPlatformBrowser, CommonModule, KeyValuePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs'; 
+import { BeamApiService, BeamModelIn, DistributedLoadIn, PointLoadIn, PointMomentIn, SolverResultsOut, SupportIn, SupportTypeAPI } from '../../services/beam-api';
 
 import type { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
 import type Konva from 'konva';
 
-// --- Interfaces (no changes) ---
-enum SupportTypeAPI { PINNED = "PINNED", FIXED = "FIXED", ROLLER = "ROLLER" }
-interface SupportIn { type: SupportTypeAPI; position: number; }
-interface PointLoadIn { magnitude: number; position: number; }
-interface PointMomentIn { magnitude: number; position: number; }
-interface DistributedLoadIn { start_magnitude: number; end_magnitude: number; start_position: number; end_position: number; }
-interface SolverResultsOut { reactions: { [key: string]: { Fx: number; Fy: number; Mz: number; } }; shear_diagram: {x:number, y:number}[]; moment_diagram: {x:number, y:number}[]; deflection_diagram: {x:number, y:number}[]; }
-interface BeamModelIn { length: number; E: number; I: number; supports: SupportIn[]; point_loads: PointLoadIn[]; point_moments: PointMomentIn[]; distributed_loads: DistributedLoadIn[]; }
+
 
 @Component({
   selector: 'app-beam-analysis',
   standalone: true,
-  imports: [ CommonModule, FormsModule, HttpClientModule, KeyValuePipe, DecimalPipe ],
+  imports: [ CommonModule, FormsModule, KeyValuePipe, DecimalPipe ],
   templateUrl: './beam-analysis.html',
   styleUrls: ['./beam-analysis.css']
 })
 export class BeamAnalysis implements AfterViewInit {
   private platformId = inject(PLATFORM_ID);
-  private http = inject(HttpClient);
+  private beamapiService = inject(BeamApiService);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   @ViewChild('konvaContainer') konvaContainer!: ElementRef<HTMLDivElement>;
@@ -34,11 +27,9 @@ export class BeamAnalysis implements AfterViewInit {
   @ViewChild('deflectionChartCanvas') deflectionChartCanvas!: ElementRef<HTMLCanvasElement>;
   
   // --- Component State ---
-  beamLength: number = 10;
+  beamLength: number = 0;
   beamE: number = 210e9;
   beamI: number = 5e-6;
-  
-  private apiUrl = 'http://127.0.0.1:8000';
   
   // --- Input Models ---
   supportPos: number = 0;
@@ -164,7 +155,7 @@ export class BeamAnalysis implements AfterViewInit {
     this.supports = []; this.pointLoads = []; this.pointMoments = []; this.distributedLoads = [];
     this.results = null; this.errorResult = null; this.isLoading = false;
     this.destroyCharts();
-    this.addDefaultSupports();
+    // this.addDefaultSupports();
     this.redrawKonva();
     this.currentView = 'model';
   }
@@ -188,18 +179,18 @@ export class BeamAnalysis implements AfterViewInit {
     const toPx = (pos: number) => padding + pos * scaleX;
     
     // Beam with increased thickness
-    layer.add(new Konva.Rect({ x: toPx(0), y: beamY - 8, width: this.beamLength * scaleX, height: 16, fill: 'lightgreen', stroke: '#003366', strokeWidth: 2 }));
+    layer.add(new Konva.Rect({ x: toPx(0), y: beamY - 8, width: this.beamLength * scaleX, height: 50, fill: 'lightgreen', stroke: '#003366', strokeWidth: 2 }));
     
     // Supports with increased size
     this.supports.forEach(s => { 
         const x = toPx(s.position); 
         if (s.type === 'PINNED') { 
-            layer.add(new Konva.Path({ x, y: beamY + 8, data: 'M 0 0 L -15 22 L 15 22 Z', fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
+            layer.add(new Konva.Path({ x, y: beamY + 8, data: 'M 0 0 L -30 40 L 30 40 Z', fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
         } else if (s.type === 'ROLLER') { 
-            layer.add(new Konva.Circle({ x, y: beamY + 18, radius: 10, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
-            layer.add(new Konva.Line({ points: [x - 18, beamY + 28, x + 18, beamY + 28], stroke: 'black', strokeWidth: 2 })); 
+            layer.add(new Konva.Circle({ x, y: beamY + 67, radius: 24, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
+            layer.add(new Konva.Line({ points: [x - 30, beamY + 92, x + 30, beamY + 92], stroke: 'black', strokeWidth: 2 })); 
         } else { // Fixed
-            layer.add(new Konva.Rect({ x: x - 4, y: beamY - 25, width: 8, height: 50, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 }));
+            layer.add(new Konva.Rect({ x: x - 4, y: beamY - 31, width: 16, height: 100, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 }));
         } 
     });
 
@@ -237,7 +228,7 @@ export class BeamAnalysis implements AfterViewInit {
     layer.draw();
   }
 
-  calculate(): void {
+   calculate(): void {
     if (this.beamLength <= 0 || this.beamE <= 0 || this.beamI <= 0) { 
       this.errorResult = 'Length, Young\'s Modulus, and Inertia must be positive values.'; 
       this.currentView = 'results';
@@ -260,7 +251,9 @@ export class BeamAnalysis implements AfterViewInit {
       point_moments: this.pointMoments, distributed_loads: this.distributedLoads
     };
 
-    this.http.post<SolverResultsOut>(`${this.apiUrl}/api/v1/solve`, payload).pipe(
+    // --- ¡AQUÍ ESTÁ EL CAMBIO PRINCIPAL! ---
+    // Llamamos al método del servicio en lugar de usar http directamente.
+    this.beamapiService.solveBeam(payload).pipe(
       finalize(() => {
         this.isLoading = false;
         this.cdr.detectChanges();
