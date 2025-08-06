@@ -31,13 +31,9 @@
     "@angular/platform-server": "^20.1.4",
     "@angular/router": "^20.1.4",
     "@angular/ssr": "^20.1.4",
-<<<<<<< HEAD
-    "express": "^5.1.0",
-=======
     "chart.js": "^4.5.0",
     "express": "^5.1.0",
     "konva": "^9.3.22",
->>>>>>> elkin
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -46,10 +42,7 @@
     "@angular/cli": "^20.1.4",
     "@angular/compiler-cli": "^20.1.0",
     "@tailwindcss/postcss": "^4.1.11",
-<<<<<<< HEAD
-=======
     "@types/chart.js": "^2.9.41",
->>>>>>> elkin
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.9",

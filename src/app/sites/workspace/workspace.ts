@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Component } from '@angular/core';
 
 @Component({
@@ -10,16 +9,3 @@ import { Component } from '@angular/core';
 export class Workspace {
 
 }
-=======
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-workspace',
-  imports: [],
-  templateUrl: './workspace.html',
-  styleUrl: './workspace.css'
-})
-export class Workspace {
-
-}
->>>>>>> elkin

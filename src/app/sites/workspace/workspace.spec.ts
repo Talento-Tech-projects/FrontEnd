@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Workspace } from './workspace';
@@ -22,28 +21,3 @@ describe('Workspace', () => {
     expect(component).toBeTruthy();
   });
 });
-=======
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Workspace } from './workspace';
-
-describe('Workspace', () => {
-  let component: Workspace;
-  let fixture: ComponentFixture<Workspace>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Workspace]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(Workspace);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
->>>>>>> elkin
