@@ -29,7 +29,14 @@
             "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
+<<<<<<< HEAD
             }
+=======
+            },
+            "externalDependencies": [
+              "canvas"
+            ]
+>>>>>>> elkin
           },
           "configurations": {
             "production": {
@@ -91,4 +98,8 @@
   "cli": {
     "analytics": "77fbe7ff-4b0d-483d-bc07-a40225d28527"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> elkin
