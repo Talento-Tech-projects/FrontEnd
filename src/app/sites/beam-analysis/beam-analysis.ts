@@ -2,11 +2,12 @@ import { Component, AfterViewInit, ViewChild, ElementRef, inject, PLATFORM_ID, C
 import { isPlatformBrowser, CommonModule, KeyValuePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { finalize } from 'rxjs'; 
 
 import type { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
 import type Konva from 'konva';
 
-// --- Interfaces (sin cambios) ---
+// --- Interfaces (no changes) ---
 enum SupportTypeAPI { PINNED = "PINNED", FIXED = "FIXED", ROLLER = "ROLLER" }
 interface SupportIn { type: SupportTypeAPI; position: number; }
 interface PointLoadIn { magnitude: number; position: number; }
@@ -32,12 +33,14 @@ export class BeamAnalysis implements AfterViewInit {
   @ViewChild('momentChartCanvas') momentChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('deflectionChartCanvas') deflectionChartCanvas!: ElementRef<HTMLCanvasElement>;
   
+  // --- Component State ---
   beamLength: number = 10;
   beamE: number = 210e9;
   beamI: number = 5e-6;
   
   private apiUrl = 'http://127.0.0.1:8000';
   
+  // --- Input Models ---
   supportPos: number = 0;
   supportType: SupportTypeAPI = SupportTypeAPI.PINNED;
   loadPos: number = 5;
@@ -49,15 +52,19 @@ export class BeamAnalysis implements AfterViewInit {
   distLoadStartMag: number = 5;
   distLoadEndMag: number = 5;
   
+  // --- Data Arrays ---
   supports: SupportIn[] = [];
   pointLoads: PointLoadIn[] = [];
   pointMoments: PointMomentIn[] = [];
   distributedLoads: DistributedLoadIn[] = [];
   
+  // --- Results & UI State ---
   results: SolverResultsOut | null = null;
   errorResult: string | null = null;
   isLoading: boolean = false;
+  currentView: 'model' | 'results' = 'model';
 
+  // --- Library Instances ---
   private Konva?: typeof Konva;
   private Chart?: typeof Chart;
   private stage?: Konva.Stage;
@@ -74,19 +81,32 @@ export class BeamAnalysis implements AfterViewInit {
         this.Chart = chartJs.Chart;
         this.Chart.register(...chartJs.registerables);
         
-        this.initKonva();
-        this.resetModel();
+        setTimeout(() => {
+          this.initKonva();
+          this.resetModel();
+        }, 0);
       } catch (error) {
-        console.error('Error inicializando librerías:', error);
-        this.errorResult = 'Error cargando las librerías de visualización.';
+        console.error('Error initializing libraries:', error);
+        this.errorResult = 'Error loading visualization libraries.';
       }
+    }
+  }
+
+  showModelView(): void {
+    this.currentView = 'model';
+    setTimeout(() => this.redrawKonva(), 0);
+  }
+
+  showResultsView(): void {
+    if (this.results || this.errorResult) {
+      this.currentView = 'results';
     }
   }
 
   private initKonva(): void {
     if (!this.Konva || !this.konvaContainer?.nativeElement) return;
     const width = this.konvaContainer.nativeElement.offsetWidth;
-    const height = 150;
+    const height = this.konvaContainer.nativeElement.offsetHeight;
     this.stage = new this.Konva.Stage({ container: this.konvaContainer.nativeElement, width, height });
     this.layer = new this.Konva.Layer();
     this.stage.add(this.layer);
@@ -101,7 +121,7 @@ export class BeamAnalysis implements AfterViewInit {
 
   addSupport(): void { 
     if (isNaN(this.supportPos) || this.supportPos < 0 || this.supportPos > this.beamLength) { 
-      alert(`Posición del apoyo inválida. Debe estar entre 0 y ${this.beamLength}.`); 
+      alert(`Invalid support position. It must be between 0 and ${this.beamLength}.`); 
       return; 
     } 
     this.supports.push({ type: this.supportType, position: this.supportPos }); 
@@ -110,7 +130,7 @@ export class BeamAnalysis implements AfterViewInit {
 
   addPointLoad(): void { 
     if (isNaN(this.loadPos) || isNaN(this.loadMag) || this.loadPos < 0 || this.loadPos > this.beamLength) { 
-      alert(`Valores de carga inválidos. La posición debe estar entre 0 y ${this.beamLength}.`); 
+      alert(`Invalid load values. Position must be between 0 and ${this.beamLength}.`); 
       return; 
     } 
     this.pointLoads.push({ magnitude: this.loadMag, position: this.loadPos }); 
@@ -119,7 +139,7 @@ export class BeamAnalysis implements AfterViewInit {
 
   addPointMoment(): void { 
     if (isNaN(this.momentPos) || isNaN(this.momentMag) || this.momentPos < 0 || this.momentPos > this.beamLength) { 
-      alert(`Valores de momento inválidos. La posición debe estar entre 0 y ${this.beamLength}.`); 
+      alert(`Invalid moment values. Position must be between 0 and ${this.beamLength}.`); 
       return; 
     } 
     this.pointMoments.push({ magnitude: this.momentMag, position: this.momentPos }); 
@@ -128,11 +148,11 @@ export class BeamAnalysis implements AfterViewInit {
 
   addDistributedLoad(): void { 
     if (isNaN(this.distLoadStartPos) || isNaN(this.distLoadEndPos) || isNaN(this.distLoadStartMag) || isNaN(this.distLoadEndMag)) { 
-      alert("Rellena todos los campos de la carga distribuida."); 
+      alert("Please fill all fields for the distributed load."); 
       return; 
     } 
     if (this.distLoadStartPos >= this.distLoadEndPos || this.distLoadStartPos < 0 || this.distLoadEndPos > this.beamLength) { 
-      alert(`Las posiciones de la carga son inválidas. Deben estar entre 0 y ${this.beamLength}.`); 
+      alert(`Invalid load positions. They must be between 0 and ${this.beamLength}.`); 
       return; 
     } 
     this.distributedLoads.push({ start_position: this.distLoadStartPos, end_position: this.distLoadEndPos, start_magnitude: this.distLoadStartMag, end_magnitude: this.distLoadEndMag }); 
@@ -146,55 +166,71 @@ export class BeamAnalysis implements AfterViewInit {
     this.destroyCharts();
     this.addDefaultSupports();
     this.redrawKonva();
+    this.currentView = 'model';
   }
 
+  // --- UPDATED redrawKonva function with bigger icons ---
   redrawKonva(): void {
     const Konva = this.Konva, layer = this.layer, stage = this.stage;
     if (!Konva || !stage || !layer) return;
 
+    stage.width(this.konvaContainer.nativeElement.offsetWidth);
+    stage.height(this.konvaContainer.nativeElement.offsetHeight);
+
     layer.destroyChildren();
     if (this.beamLength <= 0) { layer.draw(); return; }
 
-    const padding = 40, width = stage.width() - 2 * padding, scaleX = width / this.beamLength, beamY = stage.height() / 2;
+    const padding = 50; // Increased padding for more space
+    const width = stage.width() - 2 * padding;
+    const beamY = stage.height() / 2;
+    const scaleX = width / this.beamLength;
+    
     const toPx = (pos: number) => padding + pos * scaleX;
     
-    layer.add(new Konva.Rect({ x: toPx(0), y: beamY - 5, width: this.beamLength * scaleX, height: 10, fill: '#A0A0A0', stroke: 'black', strokeWidth: 1 }));
+    // Beam with increased thickness
+    layer.add(new Konva.Rect({ x: toPx(0), y: beamY - 8, width: this.beamLength * scaleX, height: 16, fill: 'lightgreen', stroke: '#003366', strokeWidth: 2 }));
     
+    // Supports with increased size
     this.supports.forEach(s => { 
         const x = toPx(s.position); 
         if (s.type === 'PINNED') { 
-            layer.add(new Konva.Path({ x, y: beamY + 5, data: 'M 0 0 L -10 15 L 10 15 Z', fill: 'cyan', stroke: 'black', strokeWidth: 1 })); 
+            layer.add(new Konva.Path({ x, y: beamY + 8, data: 'M 0 0 L -15 22 L 15 22 Z', fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
         } else if (s.type === 'ROLLER') { 
-            layer.add(new Konva.Circle({ x, y: beamY + 12.5, radius: 7.5, fill: 'cyan', stroke: 'black', strokeWidth: 1 })); 
-            layer.add(new Konva.Line({ points: [x - 12, beamY + 20, x + 12, beamY + 20], stroke: 'black', strokeWidth: 1 })); 
-        } else { 
-            layer.add(new Konva.Line({ points: [x, beamY - 15, x, beamY + 15], stroke: 'cyan', strokeWidth: 5 })); 
+            layer.add(new Konva.Circle({ x, y: beamY + 18, radius: 10, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
+            layer.add(new Konva.Line({ points: [x - 18, beamY + 28, x + 18, beamY + 28], stroke: 'black', strokeWidth: 2 })); 
+        } else { // Fixed
+            layer.add(new Konva.Rect({ x: x - 4, y: beamY - 25, width: 8, height: 50, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 }));
         } 
     });
 
+    // Point loads with increased size
     this.pointLoads.forEach(l => { 
         const x = toPx(l.position); 
-        layer.add(new Konva.Arrow({ x, y: beamY - 40, points: [0, 0, 0, 35], pointerLength: 8, pointerWidth: 8, fill: 'red', stroke: 'red', strokeWidth: 2 })); 
+        const arrowY = beamY - 60; // Increased distance from beam
+        layer.add(new Konva.Arrow({ x, y: arrowY, points: [0, 0, 0, 50], pointerLength: 12, pointerWidth: 12, fill: 'red', stroke: 'darkred', strokeWidth: 2.5 })); 
     });
     
+    // Point moments with increased size
     this.pointMoments.forEach(moment => {
       const x = toPx(moment.position);
-      const radius = 18;
+      const radius = 25; // Increased radius
       const isPositive = moment.magnitude > 0;
       const startPointX = x, startPointY = beamY + radius, endPointX = x, endPointY = beamY - radius;
       const sweepFlag = isPositive ? 0 : 1;
       const arcPathData = `M ${startPointX} ${startPointY} A ${radius} ${radius} 0 0 ${sweepFlag} ${endPointX} ${endPointY}`;
-      const arcPath = new Konva.Path({ data: arcPathData, stroke: 'purple', strokeWidth: 2 });
-      const arrow = new Konva.Arrow({ points: [0, 0], x: endPointX, y: endPointY, pointerLength: 6, pointerWidth: 6, fill: 'purple', stroke: 'purple', strokeWidth: 2, rotation: isPositive ? 90 : -90 });
+      const arcPath = new Konva.Path({ data: arcPathData, stroke: 'purple', strokeWidth: 3 });
+      const arrow = new Konva.Arrow({ points: [0, 0], x: endPointX, y: endPointY, pointerLength: 10, pointerWidth: 10, fill: 'purple', stroke: 'purple', strokeWidth: 3, rotation: isPositive ? 90 : -90 });
       layer.add(arcPath, arrow);
     });
 
+    // Distributed loads with increased size
     this.distributedLoads.forEach(dload => { 
         const x1 = toPx(dload.start_position), x2 = toPx(dload.end_position); 
-        const shape = new Konva.Line({ points: [x1, beamY - 30, x2, beamY - 30, x2, beamY - 5, x1, beamY - 5], fill: 'rgba(255, 165, 0, 0.4)', stroke: 'orange', strokeWidth: 1, closed: true }); 
+        const arrowBaseY = beamY - 45; // Increased distance
+        const shape = new Konva.Line({ points: [x1, arrowBaseY, x2, arrowBaseY, x2, beamY - 8, x1, beamY - 8], fill: 'rgba(255, 165, 0, 0.4)', stroke: 'orange', strokeWidth: 1, closed: true }); 
         layer.add(shape); 
-        for (let x_arrow = x1; x_arrow <= x2; x_arrow += 30) { 
-            layer.add(new Konva.Arrow({ x: x_arrow, y: beamY - 45, points: [0, 0, 0, 15], pointerLength: 5, pointerWidth: 5, fill: 'orange', stroke: 'orange', strokeWidth: 1.5 })); 
+        for (let x_arrow = x1 + 15; x_arrow <= x2 - 15; x_arrow += 40) { // Increased spacing
+            layer.add(new Konva.Arrow({ x: x_arrow, y: arrowBaseY - 20, points: [0, 0, 0, 20], pointerLength: 8, pointerWidth: 8, fill: 'orange', stroke: 'darkorange', strokeWidth: 2 })); 
         } 
     });
 
@@ -203,11 +239,13 @@ export class BeamAnalysis implements AfterViewInit {
 
   calculate(): void {
     if (this.beamLength <= 0 || this.beamE <= 0 || this.beamI <= 0) { 
-      this.errorResult = 'La longitud, Módulo de Young e Inercia deben ser valores positivos.'; 
+      this.errorResult = 'Length, Young\'s Modulus, and Inertia must be positive values.'; 
+      this.currentView = 'results';
       return; 
     }
     if (this.supports.length < 2) { 
-      this.errorResult = 'La viga debe tener al menos 2 apoyos para ser estable.'; 
+      this.errorResult = 'The beam must have at least 2 supports to be stable.'; 
+      this.currentView = 'results';
       return; 
     }
     
@@ -222,101 +260,98 @@ export class BeamAnalysis implements AfterViewInit {
       point_moments: this.pointMoments, distributed_loads: this.distributedLoads
     };
 
-    this.http.post<SolverResultsOut>(`${this.apiUrl}/api/v1/solve`, payload).subscribe({
-      next: (data) => {
-        if (!data || !data.reactions || !data.shear_diagram) {
-            this.errorResult = 'La respuesta del servidor es inválida o está incompleta.';
-            this.isLoading = false;
-            return;
-        }
-
-        this.results = data;
+    this.http.post<SolverResultsOut>(`${this.apiUrl}/api/v1/solve`, payload).pipe(
+      finalize(() => {
         this.isLoading = false;
         this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (data) => {
+        if (!data || !data.reactions || !data.shear_diagram) {
+            this.errorResult = 'The server response is invalid or incomplete.';
+            this.currentView = 'results';
+            return;
+        }
+        
+        this.results = data;
+        this.currentView = 'results';
+        this.cdr.detectChanges(); 
 
         setTimeout(() => {
             try {
                 this.createCharts(data);
             } catch (e) {
-                this.errorResult = `Error al renderizar los resultados: ${(e as Error).message}`;
+                this.errorResult = `Error rendering results: ${(e as Error).message}`;
                 this.cdr.detectChanges(); 
             }
-        }, 50);
+        }, 0);
       },
       error: (err) => {
-        this.errorResult = err.error?.detail || err.message || 'Error de comunicación con el servidor.';
-        this.isLoading = false;
+        if (err.error?.detail) {
+          this.errorResult = err.error.detail;
+        } else {
+          this.errorResult = `Could not connect to the calculation server. (Status: ${err.statusText || 'Unknown Error'})`;
+        }
+        this.currentView = 'results';
       }
     });
   }
   
-  /**
-   * (CORREGIDO) - Crea las gráficas de resultados, formateando ejes y unidades.
-   */
   private createCharts(data: SolverResultsOut): void {
     if (!this.Chart) return;
-
-    /**
-     * Función de ayuda para generar opciones comunes de las gráficas.
-     * Incluye formateo de los ejes para mostrar un máximo de 2 decimales.
-     */
+    
     const commonOptions = (title: string, yAxisLabel: string): ChartOptions => ({
       responsive: true,
       maintainAspectRatio: false,
       scales: {
         x: {
           type: 'linear',
-          title: { display: true, text: 'Posición (m)' }
+          title: { display: true, text: 'Position (m)' }
         },
         y: {
           title: { display: true, text: yAxisLabel },
           ticks: {
             callback: function(value) {
-              // Formatea el valor a un máximo de 2 decimales si no es un entero.
               if (typeof value === 'number' && value % 1 !== 0) {
                 return Number(value.toFixed(2));
               }
-              return value; // Devuelve el valor original si es entero.
+              return value;
             }
           }
         }
       },
       plugins: {
         title: { display: true, text: title, font: { size: 16 } },
-        legend: { display: false } // Ocultamos la leyenda ya que solo hay una serie de datos
+        legend: { display: false }
       }
     });
 
-    // 1. Gráfica de Cortante (kN)
     if (this.shearChartCanvas) {
       this.shearChart = new this.Chart(this.shearChartCanvas.nativeElement, {
         type: 'line',
         data: this.formatChartData(data.shear_diagram),
-        options: commonOptions('Diagrama de Cortante', 'Cortante (kN)')
+        options: commonOptions('Shear Diagram', 'Shear (kN)')
       });
     }
 
-    // 2. Gráfica de Momento (kNm)
     if (this.momentChartCanvas) {
       this.momentChart = new this.Chart(this.momentChartCanvas.nativeElement, {
         type: 'line',
         data: this.formatChartData(data.moment_diagram),
-        options: commonOptions('Diagrama de Momento Flector', 'Momento (kNm)')
+        options: commonOptions('Bending Moment Diagram', 'Moment (kNm)')
       });
     }
 
-    // 3. Gráfica de Deformada (mm)
     if (this.deflectionChartCanvas) {
-      // (CAMBIO CLAVE) Convierte los datos de deformada de metros (del API) a milímetros
       const deflectionDataInMm = data.deflection_diagram.map(point => ({
         x: point.x,
-        y: point.y * 1000 // Conversión m -> mm
+        y: point.y * 1000 
       }));
 
       this.deflectionChart = new this.Chart(this.deflectionChartCanvas.nativeElement, {
         type: 'line',
-        data: this.formatChartData(deflectionDataInMm, true), // Usa los datos convertidos
-        options: commonOptions('Diagrama de Deformada (Elástica)', 'Deformada (mm)') // Etiqueta actualizada
+        data: this.formatChartData(deflectionDataInMm, true),
+        options: commonOptions('Deflection Diagram (Elastic)', 'Deflection (mm)')
       });
     }
   }
@@ -325,7 +360,7 @@ export class BeamAnalysis implements AfterViewInit {
     if (!points || points.length === 0) return { datasets: [] };
     return {
       datasets: [{
-        label: 'Valor', // Etiqueta para tooltips
+        label: 'Value',
         data: points, 
         borderColor: '#36A2EB', 
         backgroundColor: noFill ? 'transparent' : 'rgba(54, 162, 235, 0.2)',
