@@ -40,6 +40,16 @@
                 </div>
             </div>
             <button (click)="addSupport()" class="w-full mt-2 bg-slate-200 text-slate-800 py-2 rounded-md hover:bg-slate-300 transition-colors text-sm font-medium">Add Support</button>
+            @if (supports.length > 0) {
+              <ul class="mt-2 space-y-1 text-xs">
+                @for (support of supports; track i; let i = $index) {
+                  <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
+                    <span>{{ support.type }} @ {{ support.position }}m</span>
+                    <button (click)="deleteSupport(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                  </li>
+                }
+              </ul>
+            }       
         </div>
 
         <!-- Add Point Loads -->
@@ -56,6 +66,16 @@
                 </div>
             </div>
             <button (click)="addPointLoad()" class="w-full mt-2 bg-slate-200 text-slate-800 py-2 rounded-md hover:bg-slate-300 transition-colors text-sm font-medium">Add Load</button>
+            @if (supports.length > 0) {
+              <ul class="mt-2 space-y-1 text-xs">
+                @for (support of supports; track i; let i = $index) {
+                  <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
+                    <span>{{ support.type }} @ {{ support.position }}m</span>
+                    <button (click)="deleteSupport(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                  </li>
+                }
+              </ul>
+            }        
         </div>
 
         <!-- Add Point Moments -->
@@ -72,6 +92,16 @@
                 </div>
             </div>
             <button (click)="addPointMoment()" class="w-full mt-2 bg-slate-200 text-slate-800 py-2 rounded-md hover:bg-slate-300 transition-colors text-sm font-medium">Add Moment</button>
+            @if (supports.length > 0) {
+              <ul class="mt-2 space-y-1 text-xs">
+                @for (support of supports; track i; let i = $index) {
+                  <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
+                    <span>{{ support.type }} @ {{ support.position }}m</span>
+                    <button (click)="deleteSupport(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                  </li>
+                }
+              </ul>
+            }        
         </div>
 
         <!-- Add Distributed Loads -->
@@ -96,6 +126,16 @@
                 </div>
             </div>
             <button (click)="addDistributedLoad()" class="w-full mt-2 bg-slate-200 text-slate-800 py-2 rounded-md hover:bg-slate-300 transition-colors text-sm font-medium">Add Dist. Load</button>
+            @if (supports.length > 0) {
+              <ul class="mt-2 space-y-1 text-xs">
+                @for (support of supports; track i; let i = $index) {
+                  <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
+                    <span>{{ support.type }} @ {{ support.position }}m</span>
+                    <button (click)="deleteSupport(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                  </li>
+                }
+              </ul>
+            }        
         </div>
 
         <!-- Action Buttons -->

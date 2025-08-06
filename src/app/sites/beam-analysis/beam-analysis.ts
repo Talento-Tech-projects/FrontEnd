@@ -179,18 +179,18 @@ export class BeamAnalysis implements AfterViewInit {
     const toPx = (pos: number) => padding + pos * scaleX;
     
     // Beam with increased thickness
-    layer.add(new Konva.Rect({ x: toPx(0), y: beamY - 8, width: this.beamLength * scaleX, height: 50, fill: 'lightgreen', stroke: '#003366', strokeWidth: 2 }));
+    layer.add(new Konva.Rect({ x: toPx(0), y: beamY - 8, width: this.beamLength * scaleX, height: 50, fill: '#0B9BF4', stroke: '#003366', strokeWidth: 2 }));
     
     // Supports with increased size
     this.supports.forEach(s => { 
         const x = toPx(s.position); 
         if (s.type === 'PINNED') { 
-            layer.add(new Konva.Path({ x, y: beamY + 8, data: 'M 0 0 L -30 40 L 30 40 Z', fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
+            layer.add(new Konva.Path({ x, y: beamY + 8, data: 'M 0 0 L -30 40 L 30 40 Z', fill: '#0BCDF4', stroke: 'black', strokeWidth: 1.5 })); 
         } else if (s.type === 'ROLLER') { 
-            layer.add(new Konva.Circle({ x, y: beamY + 67, radius: 24, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 })); 
+            layer.add(new Konva.Circle({ x, y: beamY + 67, radius: 24, fill: '#0BCDF4', stroke: 'black', strokeWidth: 1.5 })); 
             layer.add(new Konva.Line({ points: [x - 30, beamY + 92, x + 30, beamY + 92], stroke: 'black', strokeWidth: 2 })); 
         } else { // Fixed
-            layer.add(new Konva.Rect({ x: x - 4, y: beamY - 31, width: 16, height: 100, fill: '#99ccff', stroke: 'black', strokeWidth: 1.5 }));
+            layer.add(new Konva.Rect({ x: x - 4, y: beamY - 31, width: 16, height: 100, fill: '#0BCDF4', stroke: 'black', strokeWidth: 1.5 }));
         } 
     });
 
@@ -226,7 +226,77 @@ export class BeamAnalysis implements AfterViewInit {
     });
 
     layer.draw();
+   const rulerY = beamY + 300; // Position the ruler below everything else
+
+    // 1. Draw the main axis line
+    layer.add(new Konva.Line({
+        points: [toPx(0), rulerY, toPx(this.beamLength), rulerY],
+        stroke: 'black',
+        strokeWidth: 2,
+    }));
+
+    // 2. Determine a good interval for ticks
+    let majorTickStep = 1;
+    if (this.beamLength > 50) {
+        majorTickStep = 10;
+    } else if (this.beamLength > 20) {
+        majorTickStep = 5;
+    } else if (this.beamLength > 10) {
+        majorTickStep = 2;
+    }
+
+    // 3. Draw ticks and labels
+    for (let pos = 0; pos <= this.beamLength; pos += majorTickStep) {
+        const x = toPx(pos);
+        // Draw major tick
+        layer.add(new Konva.Line({
+            points: [x, rulerY - 6, x, rulerY + 6],
+            stroke: 'black',
+            strokeWidth: 2,
+        }));
+        // Draw label for the tick
+        const text = new Konva.Text({
+            y: rulerY + 12,
+            text: pos.toString(),
+            fontSize: 12,
+            fill: 'black',
+        });
+        text.x(x - text.width() / 2); // Center the text on the tick
+        layer.add(text);
+    }
+    // Ensure the final tick and label at the very end are always drawn
+    const endX = toPx(this.beamLength);
+    const endLabelText = this.beamLength.toString();
+    layer.add(new Konva.Line({
+        points: [endX, rulerY - 6, endX, rulerY + 6],
+        stroke: 'black',
+        strokeWidth: 2,
+    }));
+    const endLabel = new Konva.Text({
+        y: rulerY + 12,
+        text: endLabelText,
+        fontSize: 12,
+        fill: 'black',
+    });
+    endLabel.x(endX - endLabel.width() / 2);
+    layer.add(endLabel);
+
+
+    // 4. Add the axis label "x (m)"
+    layer.add(new Konva.Text({
+        x: toPx(this.beamLength) + 15,
+        y: rulerY - 8,
+        text: 'x (m)',
+        fontSize: 14,
+        fontStyle: 'italic',
+        fill: 'black',
+    }));
+
+    layer.draw();
   }
+
+
+
 
    calculate(): void {
     if (this.beamLength <= 0 || this.beamE <= 0 || this.beamI <= 0) { 
@@ -355,7 +425,7 @@ export class BeamAnalysis implements AfterViewInit {
       datasets: [{
         label: 'Value',
         data: points, 
-        borderColor: '#36A2EB', 
+        borderColor: '#35D47A', 
         backgroundColor: noFill ? 'transparent' : 'rgba(54, 162, 235, 0.2)',
         fill: !noFill, 
         tension: 0.1, 
@@ -364,6 +434,26 @@ export class BeamAnalysis implements AfterViewInit {
         borderWidth: 2
       }]
     };
+  }
+
+  deleteSupport(index: number): void {
+    this.supports.splice(index, 1);
+    this.redrawKonva();
+  }
+
+  deletePointLoad(index: number): void {
+    this.pointLoads.splice(index, 1);
+    this.redrawKonva();
+  }
+
+  deletePointMoment(index: number): void {
+    this.pointMoments.splice(index, 1);
+    this.redrawKonva();
+  }
+
+  deleteDistributedLoad(index: number): void {
+    this.distributedLoads.splice(index, 1);
+    this.redrawKonva();
   }
 
   private destroyCharts(): void {
