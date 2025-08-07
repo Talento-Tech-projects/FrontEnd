@@ -1,25 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router'; 
-import { NewProject } from '../new-project/new-project';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DeleteProject } from '../delete-project/delete-project';
+import { HttpClient } from '@angular/common/http';
 
-interface Project {
-  id: number;
-  title: string;
-  owner: string;
-  lastModified: string;
-  isShared: boolean;
-  isTrashed: boolean;
-}
+import { NewProject } from '../new-project/new-project';
+import { DeleteProject } from '../delete-project/delete-project';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
   imports: [
     RouterModule,
-    NewProject,
     CommonModule,
+    NewProject,
     DeleteProject
   ],
   templateUrl: './projects.html',
@@ -27,41 +20,86 @@ interface Project {
 })
 export class Projects implements OnInit {
 
-  constructor(private router: Router) {} // Constructor agregado
+  constructor(private router: Router, private http: HttpClient) {}
 
   showModal: boolean = false;
   currentUser: string = '';
+  userId: number = 0;
 
-  projects: Project[] = [
-    { id: 1, title: 'Website Redesign', owner: 'Thomas', lastModified: '2025-08-01', isShared: false, isTrashed: false },
-    { id: 2, title: 'Mobile App Concept', owner: 'Jane', lastModified: '2025-07-28', isShared: false, isTrashed: false },
-    { id: 3, title: 'Marketing Campaign Plan', owner: 'Thomas', lastModified: '2025-08-05', isShared: false, isTrashed: true },
-    { id: 4, title: 'Database Migration', owner: 'Mike', lastModified: '2025-07-25', isShared: false, isTrashed: false },
-    { id: 5, title: 'QA Testing Protocol', owner: 'Jane', lastModified: '2025-08-03', isShared: false, isTrashed: false }
-  ];
+  projects: any[] = [];
+  filterProjects: any[] = [];
 
-  filterProjects: Project[] = [];
   editingProject: { id: number, title: string, owner: string, lastModified: string } | null = null;
+
   showConfirmationModal: boolean = false;
   projectToDeleteId: number | null = null;
+
   currentFilter: string = 'all';
   currentSearchTerm: string = '';
 
   ngOnInit(): void {
     const storedEmail = localStorage.getItem('userEmail');
-    if (storedEmail) {
-      this.currentUser = storedEmail;
-    } else {
+    const storedUserId = localStorage.getItem('userId');
+
+    if (!storedEmail || !storedUserId) {
       console.warn('⚠️ No hay usuario logueado. Redirigiendo a login.');
       this.router.navigate(['/signin']);
       return;
     }
-    this.filterProjects = [...this.projects];
+
+    this.currentUser = storedEmail;
+    this.userId = parseInt(storedUserId, 10);
+
+    this.loadProjects();
+  }
+
+  loadProjects(): void {
+    this.http.get<any[]>(`http://localhost:8080/api/beams/user/${this.userId}`).subscribe({
+      next: (data) => {
+        this.projects = data.map((beam) => ({
+          id: beam.id,
+          title: `Viga #${beam.id}`,
+          owner: this.currentUser,
+          lastModified: beam.lastDate?.slice(0, 10) || 'Sin fecha',
+        }));
+
+        console.log('✅ Vigas recibidas:', this.projects);
+        this.applyFilter('');
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar vigas del usuario:', err);
+      }
+    });
   }
 
   setFilter(filterType: string): void {
     this.currentFilter = filterType;
     this.applyFilter(this.currentSearchTerm);
+  }
+
+  applyFilter(searchTerm: string): void {
+    this.currentSearchTerm = searchTerm.toLowerCase().trim();
+
+    let filtered = this.projects;
+
+    if (this.currentFilter === 'your') {
+      filtered = filtered.filter(p => p.owner === this.currentUser);
+    }
+
+    if (this.currentSearchTerm) {
+      filtered = filtered.filter(p =>
+        p.title.toLowerCase().includes(this.currentSearchTerm)
+      );
+    }
+
+    this.filterProjects = filtered;
+
+    console.log('📊 Proyectos mostrados:', this.filterProjects);
+  }
+
+  filterProject(event: Event): void {
+    const searchTerm = (event.target as HTMLInputElement).value;
+    this.applyFilter(searchTerm);
   }
 
   openNewProject(): void {
@@ -85,8 +123,6 @@ export class Projects implements OnInit {
       title: newProjectData.title,
       owner: this.currentUser,
       lastModified: new Date().toISOString().slice(0, 10),
-      isShared: false,
-      isTrashed: false
     };
     this.projects.push(newProject);
     this.applyFilter('');
@@ -109,9 +145,9 @@ export class Projects implements OnInit {
 
   confirmDelete(): void {
     if (this.projectToDeleteId !== null) {
-      const projectsIndex = this.projects.findIndex(p => p.id === this.projectToDeleteId);
-      if (projectsIndex > -1) {
-        this.projects.splice(projectsIndex, 1);
+      const index = this.projects.findIndex(p => p.id === this.projectToDeleteId);
+      if (index > -1) {
+        this.projects.splice(index, 1);
         this.applyFilter('');
       }
     }
@@ -122,33 +158,4 @@ export class Projects implements OnInit {
     this.projectToDeleteId = null;
     this.showConfirmationModal = false;
   }
-
-  applyFilter(searchTerm: string): void {
-    this.currentSearchTerm = searchTerm;
-    let tempProjects = [...this.projects];
-
-    if (this.currentFilter === 'your') {
-      tempProjects = tempProjects.filter(p => p.owner === this.currentUser && !p.isTrashed);
-    } else if (this.currentFilter === 'shared') {
-      tempProjects = tempProjects.filter(p => p.isShared && !p.isTrashed);
-    } else if (this.currentFilter === 'trashed') {
-      tempProjects = tempProjects.filter(p => p.isTrashed);
-    } else {
-      tempProjects = tempProjects.filter(p => !p.isTrashed);
-    }
-
-    const term = searchTerm.toLowerCase().trim();
-    if (term) {
-      tempProjects = tempProjects.filter(project =>
-        project.title.toLowerCase().includes(term)
-      );
-    }
-
-    this.filterProjects = tempProjects;
-  }
-
-  filterProject(event: Event): void {
-    const searchTerm = (event.target as HTMLInputElement).value;
-    this.applyFilter(searchTerm);
-  }
-} 
+}
