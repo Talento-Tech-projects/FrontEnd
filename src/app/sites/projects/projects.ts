@@ -40,6 +40,7 @@ export class Projects implements OnInit {
   ngOnInit(): void {
     const storedEmail = localStorage.getItem('userEmail');
     const storedUserId = localStorage.getItem('userId');
+    const storedUserName = localStorage.getItem('userName');
 
     if (!storedEmail || !storedUserId) {
       console.warn('⚠️ No hay usuario logueado. Redirigiendo a login.');
@@ -47,7 +48,7 @@ export class Projects implements OnInit {
       return;
     }
 
-    this.currentUser = storedEmail;
+    this.currentUser = storedUserName ?? '';
     this.userId = parseInt(storedUserId, 10);
 
     this.loadProjects();
