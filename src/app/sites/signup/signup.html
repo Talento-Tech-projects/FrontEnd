@@ -1,0 +1,60 @@
+<div class="flex items-center justify-center min-h-screen bg-[url(./assets/images/Team.jpg)] bg-cover bg-center h-64 w-full">
+  <div class="w-full max-w-sm bg-gray-50 rounded-lg shadow-lg p-6">
+    <h2 class="text-2xl font-semibold text-gray-900 text-center">
+      Crea una cuenta
+    </h2>
+
+    <div class="mt-5 mb-6">
+      <button type="button" class="w-full flex items-center justify-center p-2.5 rounded-lg border border-gray-600 bg-gray-50 hover:bg-sky-50 cursor-pointer focus:ring-4 focus:ring-gray-300 transition-all duration-300">
+        <svg class="h-7 w-7" viewBox="-3 0 262 262" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+          <!-- icono Google -->
+        </svg>
+        <span class="ml-4 font-semibold text-gray-900">Regístrate con Google</span>
+      </button>
+    </div>
+
+    <div class="flex items-center my-4">
+      <hr class="flex-grow border-gray-600">
+      <span class="px-3 text-gray-700">O</span>
+      <hr class="flex-grow border-gray-600">
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit($event)" novalidate class="space-y-4">
+      <div>
+        <label for="userEmail" class="block text-sm font-bold text-gray-900 mb-1">Correo electrónico</label>
+        <input type="email" id="userEmail" formControlName="userEmail" placeholder="john.doe@example.com" class="w-full p-2.5 rounded-lg border border-gray-600 bg-white text-gray-900 placeholder-slate-500 focus:ring-2 focus:border-cyan-400">
+      </div>
+
+      <div>
+        <label for="userPassword" class="block text-sm font-bold text-gray-900 mb-1">Contraseña</label>
+        <input type="password" id="userPassword" formControlName="userPassword" placeholder="••••••••" class="w-full p-2.5 rounded-lg border border-gray-600 bg-white text-gray-900 placeholder-slate-500 focus:ring-2 focus:border-cyan-400">
+      </div>
+
+      <div>
+        <label for="userName" class="block text-sm font-bold text-gray-900 mb-1">Nombre</label>
+        <input type="text" id="userName" formControlName="userName" placeholder="Juan Pérez" class="w-full p-2.5 rounded-lg border border-gray-600 bg-white text-gray-900 placeholder-slate-500 focus:ring-2 focus:border-cyan-400">
+      </div>
+
+      <div>
+        <label for="userNumber" class="block text-sm font-bold text-gray-900 mb-1">Número de teléfono</label>
+        <input type="tel" id="userNumber" formControlName="userNumber" placeholder="3124562378" class="w-full p-2.5 rounded-lg border border-gray-600 bg-white text-gray-900 placeholder-slate-500 focus:ring-2 focus:border-cyan-400">
+      </div>
+
+      <div class="text-center">
+        <div class="flex items-center gap-0.5">
+          <input id="acceptTerms" type="checkbox" formControlName="acceptTerms" class="h-4 w-4 text-blue-600 border-gray-600 rounded focus:ring-blue-500">
+          <label for="acceptTerms" class="ml-2 block text-sm font-semibold text-gray-900">Acepto los</label>
+          <a class="gap-1 text-sm font-semibold text-cyan-500 hover:underline cursor-pointer">Términos y Condiciones</a>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full text-white bg-cyan-600 hover:bg-cyan-700 cursor-pointer focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center">
+        Crear cuenta
+      </button>
+
+      <div class="text-center border-none cursor-pointer">
+        <a routerLink="/signin" class="text-sm font-semibold text-cyan-500 hover:underline">¿Ya tienes una cuenta?</a>
+      </div>
+    </form>
+  </div>
+</div>
