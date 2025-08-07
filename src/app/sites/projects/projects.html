@@ -82,19 +82,21 @@
             </div>
         </div>
 
-        <div *ngFor="let project of filterProjects" class="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-300">
-            <span class="text-gray-800">{{ project.title }}</span>
-            <span class="text-gray-600">{{ project.owner }}</span>
-            <span class="text-gray-600">{{ project.lastModified }}</span>
-            <div class="flex items-center gap-2">
-                <button (click)="openEditProject(project)" class="text-gray-500 cursor-pointer hover:text-blue-500 transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button (click)="showDeleteConfirmation(project.id)" class="text-gray-500 cursor-pointer hover:text-red-500 transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
-                </button>
+        @for (project of filterProjects; track project.id) {
+            <div class="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-300">
+                <span class="text-gray-800">{{ project.title }}</span>
+                <span class="text-gray-600">{{ project.owner }}</span>
+                <span class="text-gray-600">{{ project.lastModified }}</span>
+                <div class="flex items-center gap-2">
+                    <button (click)="openEditProject(project)" class="text-gray-500 cursor-pointer hover:text-blue-500 transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>
+                    <button (click)="showDeleteConfirmation(project.id)" class="text-gray-500 cursor-pointer hover:text-red-500 transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
+                    </button>
+                </div>
             </div>
-        </div>
+        }
 
     </main>
 </div>

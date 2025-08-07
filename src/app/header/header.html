@@ -60,14 +60,16 @@
                 Sign in/Sign up <span aria-hidden="true">→</span>
                 </div>
             </a>
-            <div *ngIf="isMobileMenuOpen" class="md:hidden bg-sky-50 absolute top-16 left-0 right-0 z-40 shadow-lg">
-                <div class="space-y-1 px-2 pb-3 pt-2">
-                    <a href="#" class="text-gray-500 block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
-                    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Características</a>
-                    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Precios</a>
-                    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Equipo</a>
-                    <a routerLink="/signup" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Empezar</a>
+            @if (isMobileMenuOpen) {
+                <div class="md:hidden bg-sky-50 absolute top-16 left-0 right-0 z-40 shadow-lg">
+                    <div class="space-y-1 px-2 pb-3 pt-2">
+                        <a href="#" class="text-gray-500 block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Características</a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Precios</a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Equipo</a>
+                        <a routerLink="/signup" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Empezar</a>
+                    </div>
                 </div>
-            </div>
+            }
     </nav>
 </header>

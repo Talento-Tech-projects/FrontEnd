@@ -1,11 +1,10 @@
 <!-- Main Grid Layout -->
 <div class="grid h-screen grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[450px_1fr] md:grid-rows-1 gap-4 p-4 bg-gray-100 font-sans">
 
-    <!-- Left Column: Controls & Inputs (Unchanged) -->
     <aside class="bg-white p-4 rounded-lg shadow-lg overflow-y-auto flex flex-col gap-4">
         <h2 class="text-xl font-bold text-gray-800 border-b pb-2">Analysis Parameters</h2>
 
-        <!-- Beam Properties -->
+
         <div class="space-y-3 p-3 border rounded-lg bg-gray-50/50">
             <h3 class="font-semibold text-gray-700">Beam Properties</h3>
             <div>
@@ -22,7 +21,7 @@
             </div>
         </div>
 
-        <!-- Add Supports -->
+
         <div class="space-y-2 p-3 border rounded-lg">
             <h3 class="font-semibold text-gray-700">Add Support</h3>
             <div class="grid grid-cols-2 gap-2">
@@ -52,7 +51,7 @@
             }       
         </div>
 
-        <!-- Add Point Loads -->
+
         <div class="space-y-2 p-3 border rounded-lg">
             <h3 class="font-semibold text-gray-700">Add Point Load</h3>
             <div class="grid grid-cols-2 gap-2">
@@ -78,7 +77,7 @@
             }        
         </div>
 
-        <!-- Add Point Moments -->
+
         <div class="space-y-2 p-3 border rounded-lg">
             <h3 class="font-semibold text-gray-700">Add Point Moment</h3>
             <div class="grid grid-cols-2 gap-2">
@@ -104,7 +103,7 @@
             }        
         </div>
 
-        <!-- Add Distributed Loads -->
+
         <div class="space-y-2 p-3 border rounded-lg">
             <h3 class="font-semibold text-gray-700">Add Distributed Load</h3>
             <div class="grid grid-cols-2 gap-2">
@@ -138,7 +137,7 @@
             }        
         </div>
 
-        <!-- Action Buttons -->
+ 
         <div class="mt-auto pt-4 border-t space-y-2">
             <button (click)="calculate()" [disabled]="isLoading" class="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed shadow-md">
                 {{ isLoading ? 'Calculating...' : 'Calculate Results' }}
@@ -149,9 +148,9 @@
         </div>
     </aside>
 
-    <!-- Right Column: Visualization & Results -->
+
     <main class="bg-white p-4 rounded-lg shadow-lg overflow-y-auto flex flex-col gap-4">
-        <!-- View Navigation Tabs -->
+
         <div class="flex border-b">
             <button (click)="showModelView()" 
                     [ngClass]="{'border-blue-500 text-blue-600': currentView === 'model', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'model'}"
@@ -166,52 +165,59 @@
             </button>
         </div>
 
-        <!-- Container for Model View (UPDATED) -->
+
         <div [hidden]="currentView !== 'model'" class="flex flex-col gap-4 flex-grow">
             <h2 class="text-xl font-bold text-gray-800">Beam Model</h2>
-            <!-- Konva Canvas (UPDATED: Classes for larger size) -->
+
             <div #konvaContainer class="w-full flex-grow bg-gray-50 border rounded-lg min-h-[300px]"></div>
         </div>
 
-        <!-- Container for Results View -->
+  
         <div [hidden]="currentView !== 'results'" class="flex-grow flex flex-col min-h-[400px]">
             <h2 class="text-xl font-bold text-gray-800 mb-2">Analysis Results</h2>
             
-            <!-- Error Message -->
-            <div *ngIf="errorResult" class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
-                <span class="font-bold">Calculation Error:</span> {{ errorResult }}
-            </div>
-            
-            <!-- Charts & Reactions Container -->
-            <div *ngIf="results && !errorResult" class="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="relative h-64 border rounded-md p-2"><canvas #shearChartCanvas></canvas></div>
-                <div class="relative h-64 border rounded-md p-2"><canvas #momentChartCanvas></canvas></div>
-                <div class="relative h-64 border rounded-md p-2"><canvas #deflectionChartCanvas></canvas></div>
-                <div class="p-3 bg-gray-50 rounded-lg border">
-                    <h3 class="font-semibold mb-2">Reactions at Supports</h3>
-                    <ul class="text-sm space-y-2 font-mono">
-                        <li *ngFor="let reaction of (results?.reactions | keyvalue)">
-                            <div class="bg-gray-200/60 p-2 rounded-md">
-                                <div class="font-bold">&#64; {{reaction.key | number:'1.2-2'}} m</div>
-                                 <div class="pl-2">
-                                    <span>Fx: {{reaction.value.Fx | number:'1.2-2'}} kN</span><br>
-                                    <span>Fy: {{reaction.value.Fy | number:'1.2-2'}} kN</span><br>
-                                    <span>Mz: {{reaction.value.Mz | number:'1.2-2'}} kNm</span>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Initial Placeholder -->
-            <div *ngIf="!results && !errorResult && !isLoading" class="flex items-center justify-center h-full bg-gray-50 rounded-lg border-2 border-dashed">
-                <p class="text-gray-500">Define the model and click "Calculate Results".</p>
-            </div>
+            @if (errorResult) {
+                <div class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
+                    <span class="font-bold">Calculation Error:</span> {{ errorResult }}
+                </div>
+        }
+
+             @if (results && !errorResult) { 
+                <div class="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="relative h-64 border rounded-md p-2"><canvas #shearChartCanvas></canvas></div>
+                    <div class="relative h-64 border rounded-md p-2"><canvas #momentChartCanvas></canvas></div>
+                    <div class="relative h-64 border rounded-md p-2"><canvas #deflectionChartCanvas></canvas></div>
+                    <div class="p-3 bg-gray-50 rounded-lg border">
+                        <h3 class="font-semibold mb-2">Reactions at Supports</h3>
+                        <ul class="text-sm space-y-2 font-mono">
+                            @for (reaction of (results.reactions | keyvalue); track reaction.key) {
+                                <li>
+                                    <div class="bg-gray-200/60 p-2 rounded-md">
+                                        <div class="font-bold">&#64; {{reaction.key | number:'1.2-2'}} m</div>
+                                        <div class="pl-2">
+                                            <span>Fx: {{reaction.value.Fx | number:'1.2-2'}} kN</span><br>
+                                            <span>Fy: {{reaction.value.Fy | number:'1.2-2'}} kN</span><br>
+                                            <span>Mz: {{reaction.value.Mz | number:'1.2-2'}} kNm</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+            @if (!results && !errorResult && !isLoading) {
+                <div  class="flex items-center justify-center h-full bg-gray-50 rounded-lg border-2 border-dashed">
+                    <p class="text-gray-500">Define the model and click "Calculate Results".</p>
+                </div>
+            }
             <!-- Loading Indicator -->
-            <div *ngIf="isLoading" class="flex items-center justify-center h-full bg-gray-50 rounded-lg">
-                <p class="text-gray-600 animate-pulse">Performing matrix analysis...</p>
-            </div>
+            @if (isLoading) {   
+                <div class="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+                    <p class="text-gray-600 animate-pulse">Performing matrix analysis...</p>
+                </div>
+            }
         </div>
     </main>
 </div>
