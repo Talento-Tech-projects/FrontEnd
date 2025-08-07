@@ -204,13 +204,13 @@ export class BeamAnalysis implements AfterViewInit {
     // Point moments with increased size
     this.pointMoments.forEach(moment => {
       const x = toPx(moment.position);
-      const radius = 25; // Increased radius
+      const radius = 40; // Increased radius
       const isPositive = moment.magnitude > 0;
-      const startPointX = x, startPointY = beamY + radius, endPointX = x, endPointY = beamY - radius;
+      const startPointX = x, startPointY = beamY + radius + 15, endPointX = x, endPointY = beamY - radius + 15;
       const sweepFlag = isPositive ? 0 : 1;
       const arcPathData = `M ${startPointX} ${startPointY} A ${radius} ${radius} 0 0 ${sweepFlag} ${endPointX} ${endPointY}`;
-      const arcPath = new Konva.Path({ data: arcPathData, stroke: 'purple', strokeWidth: 3 });
-      const arrow = new Konva.Arrow({ points: [0, 0], x: endPointX, y: endPointY, pointerLength: 10, pointerWidth: 10, fill: 'purple', stroke: 'purple', strokeWidth: 3, rotation: isPositive ? 90 : -90 });
+      const arcPath = new Konva.Path({ data: arcPathData, stroke: '#4BD678', strokeWidth: 3 });
+      const arrow = new Konva.Arrow({ points: [5, 5], x: endPointX, y: endPointY, pointerLength: 10, pointerWidth: 10, fill: '#4BD678', stroke: '#4BD678', strokeWidth: 3, rotation: isPositive ? 90 : -90 });
       layer.add(arcPath, arrow);
     });
 
@@ -426,7 +426,7 @@ export class BeamAnalysis implements AfterViewInit {
         label: 'Value',
         data: points, 
         borderColor: '#35D47A', 
-        backgroundColor: noFill ? 'transparent' : 'rgba(54, 162, 235, 0.2)',
+        backgroundColor: noFill ? 'transparent' : 'rgba(75, 214, 120, 0.2)',
         fill: !noFill, 
         tension: 0.1, 
         pointRadius: 1, 
