@@ -17,7 +17,7 @@ export class Signin {
   constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
 
@@ -27,7 +27,7 @@ export class Signin {
     if (this.signinForm.valid) {
       const { email, password } = this.signinForm.value;
 
-      this.http.post('http://localhost:8080/api/login', { email, password }).subscribe({
+      this.http.post('http://localhost:8080/api/users/login', { email, password }).subscribe({
         next: (res) => {
           console.log('✅ Sesión iniciada', res);
           this.router.navigate(['/dashboard']);

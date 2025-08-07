@@ -44,11 +44,12 @@ export class Signup {
 
       this.userService.createUser(payload).subscribe({
         next: (res) => {
-          console.log('✅ Usuario creado con éxito', res);
+          alert('✅ Usuario creado con éxito');
           this.router.navigate(['/signin']);
         },
         error: (err) => {
-          console.error('❌ Error al crear usuario', err);
+          alert('❌ Error al crear usuario');
+          console.error(err);
         }
       });
     } else {
