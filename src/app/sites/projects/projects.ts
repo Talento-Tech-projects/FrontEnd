@@ -59,7 +59,7 @@ export class Projects implements OnInit {
       next: (data) => {
         this.projects = data.map((beam) => ({
           id: beam.id,
-          title: `Viga #${beam.id}`,
+          title: beam.projectName,
           owner: this.currentUser,
           lastModified: beam.lastDate?.slice(0, 10) || 'Sin fecha',
         }));

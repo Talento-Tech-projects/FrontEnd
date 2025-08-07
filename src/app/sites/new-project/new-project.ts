@@ -52,13 +52,13 @@ export class NewProject implements OnChanges {
       status: true,
       lastDate: new Date().toISOString(),
       beamLength: 10,
-      e: 200000,
-      i: 5000,
+      e: null,
+      i: null,
       userId,
-      supports: [{ type: 'FIXED', position: 0 }],
-      pointLoads: [{ magnitude: 100, position: 4 }],
-      pointMoments: [{ magnitude: 50, position: 6 }],
-      distributedLoads: [{ startMagnitude: 20, endMagnitude: 30, startPosition: 2, endPosition: 8 }]
+      supports: [{ type: 'FIXED', position: null }],
+      pointLoads: [{ magnitude: null, position: null }],
+      pointMoments: [{ magnitude: null, position: null }],
+      distributedLoads: [{ startMagnitude: null, endMagnitude: null, startPosition: null, endPosition: null }]
     };
 
     this.http.post<any>('http://localhost:8080/api/beams', beam).subscribe({

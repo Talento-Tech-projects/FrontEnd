@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { isPlatformBrowser, CommonModule, KeyValuePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs'; 
@@ -7,14 +7,16 @@ import { BeamApiService, BeamModelIn, DistributedLoadIn, PointLoadIn, PointMomen
 import type { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
 import type Konva from 'konva';
 
+
+
 @Component({
   selector: 'app-beam-analysis',
   standalone: true,
-  imports: [CommonModule, FormsModule, KeyValuePipe, DecimalPipe],
+  imports: [ CommonModule, FormsModule, KeyValuePipe, DecimalPipe ],
   templateUrl: './beam-analysis.html',
   styleUrls: ['./beam-analysis.css']
 })
-export class BeamAnalysis implements OnInit, AfterViewInit {
+export class BeamAnalysis implements AfterViewInit {
   private platformId = inject(PLATFORM_ID);
   private beamapiService = inject(BeamApiService);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
@@ -23,17 +25,13 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
   @ViewChild('shearChartCanvas') shearChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('momentChartCanvas') momentChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('deflectionChartCanvas') deflectionChartCanvas!: ElementRef<HTMLCanvasElement>;
-
-  // Beam data fields
-  beamLength = 0;
-  beamE = 0;
-  beamI = 0;
-  supports: SupportIn[] = [];
-  pointLoads: PointLoadIn[] = [];
-  pointMoments: PointMomentIn[] = [];
-  distributedLoads: DistributedLoadIn[] = [];
-
-  // Form fields for user input (used in template)
+  
+  // --- Component State ---
+  beamLength: number = 10;
+  beamE: number =  0 //0e9;
+  beamI: number = 0 //5e-6;
+  
+  // --- Input Models ---
   supportPos: number = 0;
   supportType: SupportTypeAPI = SupportTypeAPI.PINNED;
   loadPos: number = 5;
@@ -44,13 +42,20 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
   distLoadEndPos: number = 8;
   distLoadStartMag: number = 5;
   distLoadEndMag: number = 5;
-
-  // UI State
+  
+  // --- Data Arrays ---
+  supports: SupportIn[] = [];
+  pointLoads: PointLoadIn[] = [];
+  pointMoments: PointMomentIn[] = [];
+  distributedLoads: DistributedLoadIn[] = [];
+  
+  // --- Results & UI State ---
   results: SolverResultsOut | null = null;
   errorResult: string | null = null;
-  isLoading = false;
+  isLoading: boolean = false;
   currentView: 'model' | 'results' = 'model';
 
+  // --- Library Instances ---
   private Konva?: typeof Konva;
   private Chart?: typeof Chart;
   private stage?: Konva.Stage;
@@ -58,25 +63,7 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
   private shearChart?: Chart;
   private momentChart?: Chart;
   private deflectionChart?: Chart;
-
-  ngOnInit(): void {
-    const beam = localStorage.getItem('beamData');
-    if (beam) {
-      try {
-        const parsed = JSON.parse(beam);
-        this.beamLength = parsed.beamLength;
-        this.beamE = parsed.E;
-        this.beamI = parsed.I;
-        this.supports = parsed.supports || [];
-        this.pointLoads = parsed.pointLoads || [];
-        this.pointMoments = parsed.pointMoments || [];
-        this.distributedLoads = parsed.distributedLoads || [];
-      } catch (e) {
-        console.error('Error parsing saved beam data:', e);
-      }
-    }
-  }
-
+  
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
       try {
@@ -84,10 +71,10 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
         const chartJs = await import('chart.js');
         this.Chart = chartJs.Chart;
         this.Chart.register(...chartJs.registerables);
-
+        
         setTimeout(() => {
           this.initKonva();
-          this.redrawKonva();
+          this.resetModel();
         }, 0);
       } catch (error) {
         console.error('Error initializing libraries:', error);
