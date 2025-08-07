@@ -14,7 +14,11 @@ import { Router, RouterLink } from '@angular/router';
 export class Signin {
   signinForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private router: Router
+  ) {
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(3)]]
@@ -27,15 +31,21 @@ export class Signin {
     if (this.signinForm.valid) {
       const { email, password } = this.signinForm.value;
 
-      this.http.post('http://localhost:8080/api/users/login', { email, password }).subscribe({
-        next: (res) => {
-          console.log('✅ Sesión iniciada', res);
-          this.router.navigate(['/dashboard']);
-        },
-        error: (err) => {
-          console.error('❌ Error al iniciar sesión', err);
-        }
-      });
+      this.http.post('http://localhost:8080/api/users/login', { email, password }, { responseType: 'text' })
+        .subscribe({
+          next: (res) => {
+            if (res === 'Login successful') {
+              localStorage.setItem('userEmail', email);
+              console.log('✅ Sesión iniciada');
+              this.router.navigate(['/projects']);
+            } else {
+              console.warn('⚠️ Respuesta inesperada:', res);
+            }
+          },
+          error: (err) => {
+            console.error('❌ Error al iniciar sesión', err);
+          }
+        });
     } else {
       console.warn('⚠️ Formulario inválido');
     }
