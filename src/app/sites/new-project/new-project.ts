@@ -7,15 +7,11 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-new-project',
   standalone: true,
-  imports: [
-    FormsModule,
-    CommonModule
-  ],
+  imports: [FormsModule, CommonModule],
   templateUrl: './new-project.html',
   styleUrl: './new-project.css'
 })
 export class NewProject implements OnChanges {
-
   constructor(private http: HttpClient, private router: Router) {}
 
   @Input() visible: boolean = false;
@@ -52,11 +48,12 @@ export class NewProject implements OnChanges {
     }
 
     const beam = {
+      projectName: trimmedTitle,  // 👈 Aquí añadimos el nombre del proyecto
       status: true,
       lastDate: new Date().toISOString(),
       beamLength: 10,
-      E: 200000,
-      I: 5000,
+      e: 200000,
+      i: 5000,
       userId,
       supports: [{ type: 'FIXED', position: 0 }],
       pointLoads: [{ magnitude: 100, position: 4 }],
@@ -68,6 +65,7 @@ export class NewProject implements OnChanges {
       next: (res) => {
         console.log('✅ Viga creada:', res);
         localStorage.setItem('beamId', res.id.toString());
+        localStorage.setItem('beamData', JSON.stringify(res)); // 👈 Guardar también la viga completa
         this.close.emit();
         this.router.navigate(['/beam-analysis']);
       },
