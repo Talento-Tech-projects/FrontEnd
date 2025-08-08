@@ -15,6 +15,7 @@ import {
   SupportIn,
   SupportTypeAPI
 } from '../../services/beam-api';
+import { BeamDTO } from '../../models/beam.model';
 
 import type { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
 import type Konva from 'konva';
@@ -36,6 +37,7 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
   @ViewChild('shearChartCanvas') shearChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('momentChartCanvas') momentChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('deflectionChartCanvas') deflectionChartCanvas!: ElementRef<HTMLCanvasElement>;
+
   
   // --- Component State ---
   beamId: number = 0;
@@ -109,6 +111,12 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
         console.warn('No beamId found in route nor localStorage. Using defaults until user creates/saves a beam.');
       }
     });
+    setTimeout(() => {
+      this.initKonva();
+      if (!this.beamId) {
+        this.resetModel();
+      }
+    }, 0);
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -282,6 +290,8 @@ export class BeamAnalysis implements OnInit, AfterViewInit {
       }
     });
   }
+
+
 
   // --- UPDATED redrawKonva function with bigger icons ---
   redrawKonva(): void {

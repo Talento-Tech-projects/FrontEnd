@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { NewProject } from '../new-project/new-project';
 import { DeleteProject } from '../delete-project/delete-project';
 
-
 @Component({
   selector: 'app-projects',
   standalone: true,
@@ -239,5 +238,17 @@ deleteProject(projectId: number): void {
       // Aquí puedes agregar manejo de errores, como mostrar un mensaje al usuario
     }
   });
+}
+
+logout() {
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('userName');
+  
+  // O borrar todo el localStorage si no tienes más cosas guardadas
+  // localStorage.clear();
+
+  console.log('🚪 Sesión cerrada');
+  this.router.navigate(['/']); // o la ruta que quieras
 }
 }

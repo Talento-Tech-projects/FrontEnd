@@ -37,7 +37,7 @@
 
       <div>
         <label for="userNumber" class="block text-sm font-bold text-gray-900 mb-1">Número de teléfono</label>
-        <input type="tel" id="userNumber" formControlName="userNumber" placeholder="3124562378" class="w-full p-2.5 rounded-lg border border-gray-600 bg-white text-gray-900 placeholder-slate-500 focus:ring-2 focus:border-cyan-400">
+        <input (keyp.enter)="onSubmit($event)" type="tel" id="userNumber" formControlName="userNumber" placeholder="3124562378" class="w-full p-2.5 rounded-lg border border-gray-600 bg-white text-gray-900 placeholder-slate-500 focus:ring-2 focus:border-cyan-400">
       </div>
 
       <div class="text-center">

@@ -33,5 +33,7 @@ export interface PointMomentDTO {
 export interface DistributedLoadDTO {
   startPosition: number; // Posición de inicio de la carga distribuida
   endPosition: number;   // Posición final de la carga distribuida
-  loadValue: number;     // Magnitud de la carga distribuida
+  loadValue: number;
+  startMagnitude:number;
+  endMagnitude: number;     // Magnitud de la carga distribuida
 }

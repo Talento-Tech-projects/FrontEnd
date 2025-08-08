@@ -20,7 +20,9 @@ export interface BeamModelIn { length: number; E: number; I: number; supports: S
 export class BeamApiService {
 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080'; // La URL de la API vive aquí
+  private apiUrl = 'http://localhost:8000'; // La URL de la API vive aquí
+    private apiUrlback = 'http://localhost:8080'; // La URL de la API vive aquí
+
 
   constructor() { }
 
@@ -30,7 +32,7 @@ export class BeamApiService {
    * @returns Un Observable con los resultados del análisis.
    */
  public solveBeam(payload: BeamModelIn): Observable<SolverResultsOut> {
-    return this.http.patch<SolverResultsOut>(`${this.apiUrl}/api/v1/solve`, payload);
+    return this.http.post<SolverResultsOut>(`${this.apiUrl}/api/v1/solve`, payload);
   }
 
   public updateBeam(id: number, beamModel: BeamModelIn): Observable<BeamDTO> {
@@ -68,11 +70,11 @@ export class BeamApiService {
 }))
   };
 
-  return this.http.patch<BeamDTO>(`${this.apiUrl}/api/beams/${id}`, beamDto);
+  return this.http.patch<BeamDTO>(`${this.apiUrlback}/api/beams/${id}`, beamDto);
 }
  
 
   getBeam(id: number): Observable<BeamDTO> {
-    return this.http.get<BeamDTO>(`${this.apiUrl}/api/beams/${id}`);
+    return this.http.get<BeamDTO>(`${this.apiUrlback}/api/beams/${id}`);
   }
 }

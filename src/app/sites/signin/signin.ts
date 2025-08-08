@@ -59,4 +59,17 @@ export class Signin {
       console.warn('⚠️ Formulario inválido');
     }
   }
+
+logout() {
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('userName');
+  
+  // O borrar todo el localStorage si no tienes más cosas guardadas
+  // localStorage.clear();
+
+  console.log('🚪 Sesión cerrada');
+  this.router.navigate(['/']); // o la ruta que quieras
+}
+
 }

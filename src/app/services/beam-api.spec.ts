@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BeamApi } from './beam-api';
+import { BeamApiService } from './beam-api';
 
 describe('BeamApi', () => {
-  let service: BeamApi;
+  let service: BeamApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BeamApi);
+    service = TestBed.inject(BeamApiService);
   });
 
   it('should be created', () => {
