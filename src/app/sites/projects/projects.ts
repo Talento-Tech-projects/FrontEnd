@@ -39,7 +39,18 @@ export class Projects implements OnInit {
   currentSearchTerm: string = '';
 
 
-  ngOnInit(): void {
+ngOnInit(): void {
+  // Si estamos en SSR, no hacer nada y esperar a que se hidrate en el cliente
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    console.log('🔄 Detectado SSR, esperando hidratación del cliente...');
+    return;
+  }
+
+  // Solo ejecutar la lógica cuando estemos en el navegador
+  this.initializeClientSide();
+}
+
+private initializeClientSide(): void {
   const storedEmail = localStorage.getItem('userEmail');
   const storedUserId = localStorage.getItem('userId');
   const storedUserName = localStorage.getItem('userName');
@@ -54,10 +65,7 @@ export class Projects implements OnInit {
   this.userId = parseInt(storedUserId, 10);
 
   this.loadProjects();
-
-  // ✅ Esto activa el filtro "all" desde el inicio
-  this.setFilter('all');
-  }
+}
 
   loadProjects(): void {
   this.http.get<any[]>(`http://localhost:8080/api/beams/user/${this.userId}`).subscribe({
@@ -71,14 +79,17 @@ export class Projects implements OnInit {
 
       console.log('✅ Vigas recibidas:', this.projects);
 
-      // ✅ Aplica filtro actual correctamente
-      this.setFilter('all');
+      // ✅ Inicializar filterProjects con todos los proyectos
+      this.filterProjects = [...this.projects];
+      this.currentFilter = 'all';
+      
+      console.log('📊 Proyectos iniciales mostrados:', this.filterProjects);
     },
     error: (err) => {
       console.error('❌ Error al cargar vigas del usuario:', err);
     }
   });
-  }
+}
 
   setFilter(filterType: string): void {
     this.currentFilter = filterType;
