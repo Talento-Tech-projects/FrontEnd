@@ -89,7 +89,7 @@
                     @for (load of pointLoads; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span>{{ load.magnitude }}kN @ {{ load.position }}m</span>
-                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                        <button (click)="deletePointLoad(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
                         </button>                        
                       </li>
@@ -122,7 +122,7 @@
                     @for (moment of pointMoments; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span>{{ moment.magnitude }}kNm @ {{ moment.position }}m</span>
-                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                        <button (click)="deletePointMoment(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
                         </button>                     
                       </li>
@@ -163,7 +163,7 @@
                     @for (dload of distributedLoads; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span class="pr-2">{{ dload.start_magnitude }}->{{ dload.end_magnitude }}kN/m from {{ dload.start_position }}m to {{ dload.end_position }}m</span>
-                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                        <button (click)="deleteDistributedLoad(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
                         </button>                       
                       </li>
