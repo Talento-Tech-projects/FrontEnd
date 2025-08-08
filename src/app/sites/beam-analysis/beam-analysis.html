@@ -179,6 +179,9 @@
       <div class="flex justify-between items-center gap-2">
         <h2 class="text-xl font-bold text-gray-800">Beam Model</h2>
         <div class="flex space-x-2">
+          <button (click)="saveModel()" class="w-full bg-green-600 text-white font-bold py-1 px-1.5 rounded-lg cursor-pointer hover:bg-green-700 transition shadow-md">
+        Save Model
+    </button>
           <button (click)="calculate()" [disabled]="isLoading" class="text-white font-bold py-1 px-1.5 rounded-lg cursor-pointer bg-cyan-500 hover:bg-cyan-400 transition disabled:bg-blue-400 shadow-md">
               {{ isLoading ? 'Calculating...' : 'Calculate Results' }}
           </button>

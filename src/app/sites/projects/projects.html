@@ -82,7 +82,9 @@
 
         @for (project of filterProjects; track project.id) {
             <div class="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-300">
-                <span class="text-gray-800">{{ project.title }}</span>
+                <span class="text-blue-600 hover:underline cursor-pointer" (click)="goToBeamAnalysis(project.id)">
+                {{ project.title }}
+                </span>
                 <span class="text-gray-600">{{ project.owner }}</span>
                 <span class="text-gray-600">{{ project.lastModified }}</span>
                 <div class="flex items-center gap-2">
