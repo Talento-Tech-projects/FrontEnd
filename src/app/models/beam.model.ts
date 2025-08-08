@@ -1,6 +1,6 @@
 
 export interface BeamDTO {
-  id: number | null;
+  id: number;
   projectName: string; // Nombre del proyecto
   status: boolean;      // Estado (activo/inactivo)
   lastDate: string | Date;  // Fecha de la última actualización o acción (puede ser una fecha o string en formato ISO)
