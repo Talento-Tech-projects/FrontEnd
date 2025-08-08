@@ -2,14 +2,14 @@
 <div class="grid h-screen grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[450px_1fr] md:grid-rows-1 gap-4 p-4 bg-gradient-to-tr from-sky-200 to-green-200 font-sans">
     <aside class="bg-white p-4 rounded-lg shadow-lg overflow-y-auto flex flex-col gap-2">
         <div class="flex justify-between items-center border-b pb-2 mb-2">
-          <h2 class="text-xl font-bold text-gray-800">Analysis Parameters</h2>
+          <h2 class="text-xl font-bold text-gray-800">Parámetros de Análisis</h2>
           <button routerLink="" class="cursor-pointer">
               <svg class="w-8 h-8 hover:scale-110 transition duration-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20 11.75C19.8376 11.7507 19.6795 11.698 19.55 11.6L12 5.94L4.45 11.6C4.29087 11.7193 4.09085 11.7706 3.89394 11.7425C3.69702 11.7143 3.51935 11.6091 3.4 11.45C3.28066 11.2909 3.22941 11.0908 3.25754 10.8939C3.28567 10.697 3.39087 10.5193 3.55 10.4L11.55 4.4C11.6798 4.30263 11.8377 4.25 12 4.25C12.1623 4.25 12.3202 4.30263 12.45 4.4L20.45 10.4C20.5952 10.5179 20.6911 10.6859 20.7189 10.8709C20.7466 11.0559 20.7042 11.2446 20.6 11.4C20.5363 11.503 20.4482 11.5888 20.3436 11.6498C20.239 11.7108 20.121 11.7452 20 11.75Z" fill="#a0aec0"></path> <path d="M18 19.75H6C5.80189 19.7474 5.61263 19.6676 5.47253 19.5275C5.33244 19.3874 5.25259 19.1981 5.25 19V9.5C5.25 9.30109 5.32902 9.11032 5.46967 8.96967C5.61032 8.82902 5.80109 8.75 6 8.75C6.19891 8.75 6.38968 8.82902 6.53033 8.96967C6.67098 9.11032 6.75 9.30109 6.75 9.5V18.25H17.25V9.5C17.25 9.30109 17.329 9.11032 17.4697 8.96967C17.6103 8.82902 17.8011 8.75 18 8.75C18.1989 8.75 18.3897 8.82902 18.5303 8.96967C18.671 9.11032 18.75 9.30109 18.75 9.5V19C18.7474 19.1981 18.6676 19.3874 18.5275 19.5275C18.3874 19.6676 18.1981 19.7474 18 19.75Z" fill="#a0aec0"></path> <path d="M14 19.75C13.8019 19.7474 13.6126 19.6676 13.4725 19.5275C13.3324 19.3874 13.2526 19.1981 13.25 19V12.75H10.75V19C10.75 19.1989 10.671 19.3897 10.5303 19.5303C10.3897 19.671 10.1989 19.75 10 19.75C9.80109 19.75 9.61032 19.671 9.46967 19.5303C9.32902 19.3897 9.25 19.1989 9.25 19V12C9.25259 11.8019 9.33244 11.6126 9.47253 11.4725C9.61263 11.3324 9.80189 11.2526 10 11.25H14C14.1981 11.2526 14.3874 11.3324 14.5275 11.4725C14.6676 11.6126 14.7474 11.8019 14.75 12V19C14.7474 19.1981 14.6676 19.3874 14.5275 19.5275C14.3874 19.6676 14.1981 19.7474 14 19.75Z" fill="#a0aec0"></path> </g></svg>
           </button>
         </div>
         <div class="border rounded-lg">
             <button (click)="toggleBeamSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
-                <span>Beam Properties</span>
+                <span>Propiedades de la Viga</span>
                   @if (isBeamSectionOpen) {
                     <svg class="h-6 w-6 transition-transform duration-200 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -23,15 +23,15 @@
             @if(isBeamSectionOpen){        
                 <div class="p-3 border-t space-y-3 bg-gray-50/50">
                     <div>
-                        <label for="beamLength" class="block text-sm font-medium text-gray-600">Length (m)</label>
+                        <label for="beamLength" class="block text-sm font-medium text-gray-600">Longitud (m)</label>
                         <input type="number" id="beamLength" [(ngModel)]="beamLength" (change)="redrawKonva()" (keyup.enter)="redrawKonva()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     </div>
                     <div>
-                        <label for="beamE" class="block text-sm font-medium text-gray-600">Young's Modulus (E) [Pa]</label>
+                        <label for="beamE" class="block text-sm font-medium text-gray-600">Modulo de Young (E) [Pa]</label>
                         <input type="text" id="beamE" [(ngModel)]="beamE" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     </div>
                     <div>
-                        <label for="beamI" class="block text-sm font-medium text-gray-600">Moment of Inertia (I) [m⁴]</label>
+                        <label for="beamI" class="block text-sm font-medium text-gray-600">Momento de Inercia (I) [m⁴]</label>
                         <input type="text" id="beamI" [(ngModel)]="beamI" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     </div>
                 </div>
@@ -41,7 +41,7 @@
 
         <div class="border rounded-lg">
             <button (click)="toggleSupportsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
-                <span>Add Support</span>
+                <span>Añadir Soporte</span>
                   @if (isSupportsSectionOpen) {
                     <svg class="h-6 w-6 transition-transform duration-200 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -56,15 +56,15 @@
               <div class="p-3 border-t space-y-2">
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label for="supportPos" class="block text-sm font-medium text-gray-600">Position (m)</label>
+                        <label for="supportPos" class="block text-sm font-medium text-gray-600">Posicion (m)</label>
                         <input type="number" id="supportPos" (keyup.enter)="addSupport()" [(ngModel)]="supportPos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label for="supportType" class="block text-sm font-medium text-gray-600">Type</label>
+                        <label for="supportType" class="block text-sm font-medium text-gray-600">Tipo</label>
                         <select id="supportType" [(ngModel)]="supportType" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="PINNED">Pinned</option>
-                            <option value="ROLLER">Roller</option>
-                            <option value="FIXED">Fixed</option>
+                            <option value="PINNED">Empotrado</option>
+                            <option value="ROLLER">Patin</option>
+                            <option value="FIXED">Fijo</option>
                         </select>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
 
         <div class="border rounded-lg">
             <button (click)="toggleLoadsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
-                <span>Add Point Load</span>
+                <span>Añadir Carga Puntual</span>
                   @if (isLoadsSectionOpen) {
                     <svg class="h-6 w-6 transition-transform duration-200 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -102,11 +102,11 @@
               <div class="p-3 border-t space-y-2">
                 <div class="grid grid-cols-2 gap-2">
                      <div>
-                        <label for="loadPos" class="block text-sm font-medium text-gray-600">Position (m)</label>
+                        <label for="loadPos" class="block text-sm font-medium text-gray-600">Posicion (m)</label>
                         <input type="number" id="loadPos" (keyup.enter)="addPointLoad()" [(ngModel)]="loadPos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label for="loadMag" class="block text-sm font-medium text-gray-600">Magnitude (kN)</label>
+                        <label for="loadMag" class="block text-sm font-medium text-gray-600">Magnitud (kN)</label>
                         <input type="number" id="loadMag" [(ngModel)]="loadMag" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Positive downwards">
                     </div>
                 </div>
@@ -129,7 +129,7 @@
 
         <div class="border rounded-lg">
             <button (click)="toggleMomentsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
-                <span>Add Point Moment</span>
+                <span>Añadir Momento Puntual</span>
                   @if (isMomentsSectionOpen) {
                     <svg class="h-6 w-6 transition-transform duration-200 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -144,11 +144,11 @@
               <div class="p-3 border-t space-y-2">
                 <div class="grid grid-cols-2 gap-2">
                      <div>
-                        <label for="momentPos" class="block text-sm font-medium text-gray-600">Position (m)</label>
+                        <label for="momentPos" class="block text-sm font-medium text-gray-600">Posicion (m)</label>
                         <input type="number" id="momentPos" (keyup.enter)="addPointMoment()" [(ngModel)]="momentPos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label for="momentMag" class="block text-sm font-medium text-gray-600">Magnitude (kNm)</label>
+                        <label for="momentMag" class="block text-sm font-medium text-gray-600">Magnitud (kNm)</label>
                         <input type="number" id="momentMag" [(ngModel)]="momentMag" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Counter-clockwise positive">
                     </div>
                 </div>
@@ -171,7 +171,7 @@
 
         <div class="border rounded-lg">
             <button (click)="toggleDistLoadsSection()" class="group w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
-                <span>Add Distributed Load</span>
+                <span>Añadir Cargas Distribuidas</span>
                   @if (isDistLoadsSectionOpen) {
                     <svg class="h-6 w-6 transition-transform duration-200 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -186,19 +186,19 @@
               <div class="p-3 border-t space-y-2">
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-600">Start Pos. (m)</label>
+                        <label class="block text-sm font-medium text-gray-600">Pos. Inicial(m)</label>
                         <input type="number" [(ngModel)]="distLoadStartPos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600">End Pos. (m)</label>
+                        <label class="block text-sm font-medium text-gray-600">Pos. Final (m)</label>
                         <input type="number" [(ngModel)]="distLoadEndPos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600">Start Mag. (kN/m)</label>
+                        <label class="block text-sm font-medium text-gray-600">Mag. Inicial (kN/m)</label>
                         <input type="number" [(ngModel)]="distLoadStartMag" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600">End Mag. (kN/m)</label>
+                        <label class="block text-sm font-medium text-gray-600">Mag. Final (kN/m)</label>
                         <input type="number" (keyup.enter)="addDistributedLoad()" [(ngModel)]="distLoadEndMag" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                 </div>
@@ -222,7 +222,7 @@
 
     <main class="bg-white p-4 rounded-lg shadow-lg overflow-y-auto flex flex-col gap-4">
       <div class="flex justify-between items-center gap-2">
-        <h2 class="text-xl font-bold text-gray-800">Beam Model</h2>
+        <h2 class="text-xl font-bold text-gray-800">Modelo de la Viga</h2>
         <div class="flex space-x-2">
           <button (click)="saveModel()" class="bg-emerald-500 text-white font-bold py-1 px-1.5 rounded-lg cursor-pointer hover:bg-emerald-400 transition shadow-md">
         Save Model
@@ -240,13 +240,13 @@
           <button (click)="showModelView()" 
                   [ngClass]="{'border-cyan-600 text-cyan-600': currentView === 'model', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'model'}"
                   class="py-2 px-4 font-semibold text-center border-b-2 transition-colors">
-              Model Visualization
+              Visualizacion del Modelo
           </button>
           <button (click)="showResultsView()" 
                   [disabled]="!results && !errorResult"
                   [ngClass]="{'border-cyan-600 text-cyan-600': currentView === 'results', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'results'}"
                   class="py-2 px-4 font-medium text-center border-b-2 transition-colors disabled:text-gray-300 disabled:cursor-not-allowed">
-              Analysis Results
+              Analisis de los resultados
           </button>
       </div>
       <div [hidden]="currentView !== 'model'" class="flex flex-col gap-4 flex-grow">
@@ -265,7 +265,7 @@
                 <div class="relative h-64 border rounded-md p-2"><canvas #momentChartCanvas></canvas></div>
                 <div class="relative h-64 border rounded-md p-2"><canvas #deflectionChartCanvas></canvas></div>
                 <div class="p-3 bg-gray-50 rounded-lg border">
-                    <h3 class="font-semibold mb-2">Reactions at Supports</h3>
+                    <h3 class="font-semibold mb-2">Reacciones en los Soportes</h3>
                     <ul class="text-sm space-y-2 font-mono">
                         @for (reaction of (results.reactions | keyvalue); track reaction.key) {
                           <li>
@@ -285,12 +285,12 @@
           }
           @if (!results && !errorResult && !isLoading) {
             <div class="flex items-center justify-center h-full bg-gray-50 rounded-lg border-2 border-dashed">
-                <p class="text-gray-500">Define the model and click "Calculate Results".</p>
+                <p class="text-gray-500">Definir el modelo y haz click "Calcular Resultados".</p>
             </div>
           }
           @if (isLoading) {
             <div class="flex items-center justify-center h-full bg-gray-50 rounded-lg">
-                <p class="text-gray-600 animate-pulse">Performing matrix analysis...</p>
+                <p class="text-gray-600 animate-pulse">Haciendo el analisis matricial...</p>
             </div>
           }
       </div>
