@@ -143,13 +143,14 @@ export class Projects implements OnInit {
   }
 
   handleProjectUpdated(updatedProject: { id: number, title: string }): void {
-    const projectToUpdate = this.projects.find(p => p.id === updatedProject.id);
-    if (projectToUpdate) {
-      projectToUpdate.title = updatedProject.title;
-    }
-    this.applyFilter('');
-    this.closeNewProject();
+  // Si es una edición (tiene ID), llamar al endpoint de actualización
+  if (updatedProject.id) {
+    this.updateProjectName(updatedProject.id, updatedProject.title);
+  } else {
+    // Si es nuevo proyecto, mantener la lógica existente
+    this.handleProjectCreated({ title: updatedProject.title });
   }
+}
 
   showDeleteConfirmation(projectId: number): void {
     this.projectToDeleteId = projectId;
@@ -157,21 +158,42 @@ export class Projects implements OnInit {
   }
 
   confirmDelete(): void {
-    if (this.projectToDeleteId !== null) {
-      const index = this.projects.findIndex(p => p.id === this.projectToDeleteId);
-      if (index > -1) {
-        this.projects.splice(index, 1);
-        this.applyFilter('');
-      }
-    }
+  if (this.projectToDeleteId !== null) {
+    // Llamar al endpoint para eliminar el proyecto
+    this.deleteProject(this.projectToDeleteId);
+  } else {
+    // Si no hay ID, solo cerrar el modal
     this.cancelDelete();
-  }
+  }}
 
   cancelDelete(): void {
     this.projectToDeleteId = null;
     this.showConfirmationModal = false;
   }
-
+deleteProject(projectId: number): void {
+  this.http.delete(`http://localhost:8080/api/beams/${projectId}`).subscribe({
+    next: () => {
+      console.log('✅ Proyecto eliminado exitosamente');
+      
+      // Eliminar el proyecto del array local
+      const index = this.projects.findIndex(p => p.id === projectId);
+      if (index > -1) {
+        this.projects.splice(index, 1);
+        // Reaplicar filtros para actualizar la vista
+        this.applyFilter(this.currentSearchTerm);
+      }
+      
+      // Cerrar el modal de confirmación
+      this.cancelDelete();
+    },
+    error: (err) => {
+      console.error('❌ Error al eliminar el proyecto:', err);
+      // Aquí puedes agregar manejo de errores
+      // Por ejemplo, mostrar un mensaje de error al usuario
+      this.cancelDelete(); // Cerrar modal incluso si hay error
+    }
+  });
+}
 
   goToFeatures() {
     this.router.navigate([''], { fragment: 'features' });
@@ -181,4 +203,30 @@ export class Projects implements OnInit {
     this.router.navigate([''], { fragment: 'pricing' });
   }  
 
+  updateProjectName(projectId: number, newName: string): void {
+  const updateData = { projectName: newName };
+  
+  this.http.patch<any>(`http://localhost:8080/api/beams/${projectId}/name`, updateData).subscribe({
+    next: (updatedBeam) => {
+      console.log('✅ Proyecto actualizado:', updatedBeam);
+      
+      // Actualizar el proyecto en el array local
+      const projectToUpdate = this.projects.find(p => p.id === projectId);
+      if (projectToUpdate) {
+        projectToUpdate.title = newName;
+        projectToUpdate.lastModified = new Date().toISOString().slice(0, 10);
+      }
+      
+      // Reaplicar filtros para mostrar los cambios
+      this.applyFilter(this.currentSearchTerm);
+      
+      // Cerrar el modal
+      this.closeNewProject();
+    },
+    error: (err) => {
+      console.error('❌ Error al actualizar el proyecto:', err);
+      // Aquí puedes agregar manejo de errores, como mostrar un mensaje al usuario
+    }
+  });
+}
 }

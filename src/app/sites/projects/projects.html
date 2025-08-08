@@ -109,9 +109,8 @@
 </app-new-project>     
 
 <app-delete-project 
-  [visible]="showConfirmationModal" 
-  (close)="closeNewProject()"
+  [visible]="showConfirmationModal"
   [projectId]="projectToDeleteId"
   (confirm)="confirmDelete()"
   (cancel)="cancelDelete()">
-</app-delete-project>     
+</app-delete-project>    
