@@ -42,7 +42,7 @@ export class NewProject implements OnChanges, OnInit {
       this.projectTitle = currentProject ? currentProject.title : '';
     }
   }
-
+ 
   saveProject(): void {
     const trimmedTitle = this.projectTitle.trim();
     if (!trimmedTitle) return;

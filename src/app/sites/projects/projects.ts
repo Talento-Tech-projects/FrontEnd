@@ -40,39 +40,44 @@ export class Projects implements OnInit {
 
 
   ngOnInit(): void {
-    const storedEmail = localStorage.getItem('userEmail');
-    const storedUserId = localStorage.getItem('userId');
-    const storedUserName = localStorage.getItem('userName');
+  const storedEmail = localStorage.getItem('userEmail');
+  const storedUserId = localStorage.getItem('userId');
+  const storedUserName = localStorage.getItem('userName');
 
-    if (!storedEmail || !storedUserId) {
-      console.warn('⚠️ No hay usuario logueado. Redirigiendo a login.');
-      this.router.navigate(['/signin']);
-      return;
-    }
+  if (!storedEmail || !storedUserId) {
+    console.warn('⚠️ No hay usuario logueado. Redirigiendo a login.');
+    this.router.navigate(['/signin']);
+    return;
+  }
 
-    this.currentUser = storedUserName ?? '';
-    this.userId = parseInt(storedUserId, 10);
+  this.currentUser = storedUserName ?? '';
+  this.userId = parseInt(storedUserId, 10);
 
-    this.loadProjects();
+  this.loadProjects();
+
+  // ✅ Esto activa el filtro "all" desde el inicio
+  this.setFilter('all');
   }
 
   loadProjects(): void {
-    this.http.get<any[]>(`http://localhost:8080/api/beams/user/${this.userId}`).subscribe({
-      next: (data) => {
-        this.projects = data.map((beam) => ({
-          id: beam.id,
-          title: beam.projectName,
-          owner: this.currentUser,
-          lastModified: beam.lastDate?.slice(0, 10) || 'Sin fecha',
-        }));
+  this.http.get<any[]>(`http://localhost:8080/api/beams/user/${this.userId}`).subscribe({
+    next: (data) => {
+      this.projects = data.map((beam) => ({
+        id: beam.id,
+        title: beam.projectName,
+        owner: this.currentUser,
+        lastModified: beam.lastDate?.slice(0, 10) || 'Sin fecha',
+      }));
 
-        console.log('✅ Vigas recibidas:', this.projects);
-        this.applyFilter('');
-      },
-      error: (err) => {
-        console.error('❌ Error al cargar vigas del usuario:', err);
-      }
-    });
+      console.log('✅ Vigas recibidas:', this.projects);
+
+      // ✅ Aplica filtro actual correctamente
+      this.setFilter('all');
+    },
+    error: (err) => {
+      console.error('❌ Error al cargar vigas del usuario:', err);
+    }
+  });
   }
 
   setFilter(filterType: string): void {
@@ -130,6 +135,11 @@ export class Projects implements OnInit {
     this.projects.push(newProject);
     this.applyFilter('');
     this.closeNewProject();
+  }
+
+  goToBeamAnalysis(projectId: number): void {
+  localStorage.setItem('beamId', projectId.toString());
+  this.router.navigate(['/beam-analysis']);
   }
 
   handleProjectUpdated(updatedProject: { id: number, title: string }): void {
