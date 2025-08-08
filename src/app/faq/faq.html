@@ -1,0 +1,55 @@
+<section id="faq" class="py-16 md:py-24 bg-sky-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-gray-900">
+            Preguntas Frecuentes
+        </h2>
+        <div class="space-y-4">
+            <details class="group bg-white rounded-xl shadow-lg">
+                <summary class="flex justify-between items-center font-semibold cursor-pointer py-4 px-6 text-lg text-gray-800">
+                    ¿Que tipos de carga puedo agregar?
+                    <svg class="h-6 w-6 transition-transform duration-200 transform group-open:rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </summary>
+                <div class="px-6 pb-4 pt-2 bg-sky-50 border-t border-sky-100 rounded-b-xl">
+                    <p class="text-gray-700">
+                        Se pueden agregar cargas puntuales, cargas distribuidas (uniformes y variables) y momentos puntuales. 
+                        La aplicacion automaticamente calculara los efectos de todas estas fuerzas.
+                    </p>
+                </div>
+            </details>
+
+            <details class="group bg-white rounded-xl shadow-lg">
+                <summary class="flex justify-between items-center font-semibold cursor-pointer py-4 px-6 text-lg text-gray-800">
+                    ¿Que es una carga puntual?
+                    <svg class="h-6 w-6 transition-transform duration-200 transform group-open:rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </summary>
+                <div class="px-6 pb-4 pt-2 bg-sky-50 border-t border-sky-100 rounded-b-xl">
+                    <p class="text-gray-700">
+                        Una carga puntual es una fuerza que se aplica en un punto específico de la viga. 
+                        Aunque en la realidad una carga siempre ocupa una pequeña área, la simplificamos a un solo punto para facilitar los cálculos de diseño.
+                    </p>
+                </div>
+            </details>
+
+            <details class="group bg-white rounded-xl shadow-lg">
+                <summary class="flex justify-between items-center font-semibold cursor-pointer py-4 px-6 text-lg text-gray-800">
+                    ¿Por qué son importantes el Módulo de Elasticidad (E) y el Momento de Inercia (I)?
+                    <svg class="h-6 w-6 transition-transform duration-200 transform group-open:rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </summary>
+                <div class="px-6 pb-4 pt-2 bg-sky-50 border-t border-sky-100 rounded-b-xl">
+                    <p class="text-gray-700">
+                        Estos dos valores son cruciales porque definen cómo se comportará la viga bajo carga. 
+                        E es una propiedad del material que indica qué tan rígido es, mientras que I es una propiedad geométrica de la sección transversal de la viga que mide su resistencia a la flexión. 
+                        A mayor valor de E o I, menor será la deflexión de la viga.
+                    </p>
+                </div>
+            </details>
+            
+        </div>
+    </div>
+</section>

@@ -1,7 +1,7 @@
 <!-- Main Grid Layout -->
 <div class="grid h-screen grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[450px_1fr] md:grid-rows-1 gap-4 p-4 bg-gray-100 font-sans">
 
-    <!-- Left Column: Controls & Inputs (UPDATED with Accordion) -->
+
     <aside class="bg-white p-4 rounded-lg shadow-lg overflow-y-auto flex flex-col gap-2">
         <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-2">Analysis Parameters</h2>
 
@@ -28,7 +28,7 @@
             }
         </div>
 
-        <!-- Supports Section -->
+
         <div class="border rounded-lg">
             <button (click)="toggleSupportsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
                 <span>Add Support</span>
@@ -55,7 +55,9 @@
                     @for (support of supports; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span>{{ support.type }} @ {{ support.position }}m</span>
-                        <button (click)="deleteSupport(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
+                        </button>
                       </li>
                     }
                   </ul>
@@ -64,7 +66,6 @@
             }
         </div>
 
-        <!-- Point Loads Section -->
         <div class="border rounded-lg">
             <button (click)="toggleLoadsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
                 <span>Add Point Load</span>
@@ -87,7 +88,9 @@
                     @for (load of pointLoads; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span>{{ load.magnitude }}kN @ {{ load.position }}m</span>
-                        <button (click)="deletePointLoad(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
+                        </button>                        
                       </li>
                     }
                   </ul>
@@ -96,7 +99,6 @@
             }
         </div>
 
-        <!-- Point Moments Section -->
         <div class="border rounded-lg">
             <button (click)="toggleMomentsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
                 <span>Add Point Moment</span>
@@ -119,7 +121,9 @@
                     @for (moment of pointMoments; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span>{{ moment.magnitude }}kNm @ {{ moment.position }}m</span>
-                        <button (click)="deletePointMoment(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
+                        </button>                     
                       </li>
                     }
                   </ul>
@@ -128,7 +132,6 @@
             }
         </div>
 
-        <!-- Distributed Loads Section -->
         <div class="border rounded-lg">
             <button (click)="toggleDistLoadsSection()" class="w-full flex justify-between items-center rounded-lg cursor-pointer p-3 font-semibold text-gray-700 hover:bg-sky-50">
                 <span>Add Distributed Load</span>
@@ -159,7 +162,9 @@
                     @for (dload of distributedLoads; track i; let i = $index) {
                       <li class="flex justify-between items-center bg-gray-100 p-1.5 rounded-md">
                         <span class="pr-2">{{ dload.start_magnitude }}->{{ dload.end_magnitude }}kN/m from {{ dload.start_position }}m to {{ dload.end_position }}m</span>
-                        <button (click)="deleteDistributedLoad(i)" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+                        <button (click)="deleteSupport(i)" class="text-gray-500 hover:text-red-400 cursor-pointer font-bold px-2 transition-colors duration-300">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></svg>
+                        </button>                       
                       </li>
                     }
                   </ul>
@@ -169,15 +174,14 @@
         </div>
     </aside>
 
-    <!-- Right Column: Visualization & Results (Unchanged) -->
     <main class="bg-white p-4 rounded-lg shadow-lg overflow-y-auto flex flex-col gap-4">
       <div class="flex justify-between items-center gap-2">
         <h2 class="text-xl font-bold text-gray-800">Beam Model</h2>
         <div class="flex space-x-2">
-          <button (click)="calculate()" [disabled]="isLoading" class=" bg-blue-600 text-white font-bold py-1 px-1.5 rounded-lg hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed shadow-md">
+          <button (click)="calculate()" [disabled]="isLoading" class="text-white font-bold py-1 px-1.5 rounded-lg cursor-pointer bg-cyan-500 hover:bg-cyan-400 transition disabled:bg-blue-400 shadow-md">
               {{ isLoading ? 'Calculating...' : 'Calculate Results' }}
           </button>
-          <button (click)="resetModel()" class=" bg-red-600 text-white font-bold py-1 px-1.5 rounded-lg hover:bg-red-700 transition shadow-md">
+          <button (click)="resetModel()" class="text-white font-bold py-1 px-1.5 rounded-lg cursor-pointer bg-red-500 hover:bg-red-400 transition shadow-md">
               Reset Model
           </button>
         </div>
@@ -185,13 +189,13 @@
         
       <div class="flex border-b">
           <button (click)="showModelView()" 
-                  [ngClass]="{'border-blue-500 text-blue-600': currentView === 'model', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'model'}"
-                  class="py-2 px-4 font-medium text-center border-b-2 transition-colors">
+                  [ngClass]="{'border-cyan-600 text-cyan-600': currentView === 'model', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'model'}"
+                  class="py-2 px-4 font-semibold text-center border-b-2 transition-colors">
               Model Visualization
           </button>
           <button (click)="showResultsView()" 
                   [disabled]="!results && !errorResult"
-                  [ngClass]="{'border-blue-500 text-blue-600': currentView === 'results', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'results'}"
+                  [ngClass]="{'border-cyan-600 text-cyan-600': currentView === 'results', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': currentView !== 'results'}"
                   class="py-2 px-4 font-medium text-center border-b-2 transition-colors disabled:text-gray-300 disabled:cursor-not-allowed">
               Analysis Results
           </button>

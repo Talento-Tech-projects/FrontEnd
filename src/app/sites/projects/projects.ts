@@ -3,8 +3,7 @@ import { RouterModule } from '@angular/router';
 import { NewProject } from '../new-project/new-project';
 import { CommonModule } from '@angular/common';
 import { DeleteProject } from '../delete-project/delete-project';
-
-
+import { Router } from '@angular/router';
 
 interface Project {
     id: number;
@@ -51,6 +50,10 @@ export class Projects implements OnInit{
 
   currentFilter: string = 'all'; 
   currentSearchTerm: string = ''; 
+
+  constructor(private router: Router) {
+
+  }
 
   ngOnInit(): void {
     this.filterProjects = [...this.projects];
@@ -168,5 +171,13 @@ export class Projects implements OnInit{
     const searchTerm = (event.target as HTMLInputElement).value;
     this.applyFilter(searchTerm);
   }
+
+  goToFeatures() {
+    this.router.navigate([''], { fragment: 'features' });
+  }
+
+  goToPricing() {
+    this.router.navigate([''], { fragment: 'pricing' });
+  }  
 
 }
