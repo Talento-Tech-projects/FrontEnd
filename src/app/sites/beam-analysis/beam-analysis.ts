@@ -3,6 +3,7 @@ import { isPlatformBrowser, CommonModule, KeyValuePipe, DecimalPipe } from '@ang
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs'; 
 import { BeamApiService, BeamModelIn, DistributedLoadIn, PointLoadIn, PointMomentIn, SolverResultsOut, SupportIn, SupportTypeAPI } from '../../services/beam-api';
+import { RouterLink } from '@angular/router';
 
 import type { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
 import type Konva from 'konva';
@@ -12,7 +13,7 @@ import type Konva from 'konva';
 @Component({
   selector: 'app-beam-analysis',
   standalone: true,
-  imports: [ CommonModule, FormsModule, KeyValuePipe, DecimalPipe ],
+  imports: [ CommonModule, FormsModule, KeyValuePipe, DecimalPipe, RouterLink ],
   templateUrl: './beam-analysis.html',
   styleUrls: ['./beam-analysis.css']
 })

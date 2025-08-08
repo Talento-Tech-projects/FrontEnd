@@ -1,40 +1,42 @@
 <div class="grid h-screen grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[250px_1fr] md:grid-rows-[auto_1fr]">
     <header class="col-span-full border-b border-gray-100 bg-white py-1.5 px-6 flex items-center justify-between shadow-sm ">
-        <a href="" class="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200 ">Home</a>
+        <button routerLink="" class="cursor-pointer">
+            <svg class="w-8 h-8 hover:scale-110 transition duration-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20 11.75C19.8376 11.7507 19.6795 11.698 19.55 11.6L12 5.94L4.45 11.6C4.29087 11.7193 4.09085 11.7706 3.89394 11.7425C3.69702 11.7143 3.51935 11.6091 3.4 11.45C3.28066 11.2909 3.22941 11.0908 3.25754 10.8939C3.28567 10.697 3.39087 10.5193 3.55 10.4L11.55 4.4C11.6798 4.30263 11.8377 4.25 12 4.25C12.1623 4.25 12.3202 4.30263 12.45 4.4L20.45 10.4C20.5952 10.5179 20.6911 10.6859 20.7189 10.8709C20.7466 11.0559 20.7042 11.2446 20.6 11.4C20.5363 11.503 20.4482 11.5888 20.3436 11.6498C20.239 11.7108 20.121 11.7452 20 11.75Z" fill="#a0aec0"></path> <path d="M18 19.75H6C5.80189 19.7474 5.61263 19.6676 5.47253 19.5275C5.33244 19.3874 5.25259 19.1981 5.25 19V9.5C5.25 9.30109 5.32902 9.11032 5.46967 8.96967C5.61032 8.82902 5.80109 8.75 6 8.75C6.19891 8.75 6.38968 8.82902 6.53033 8.96967C6.67098 9.11032 6.75 9.30109 6.75 9.5V18.25H17.25V9.5C17.25 9.30109 17.329 9.11032 17.4697 8.96967C17.6103 8.82902 17.8011 8.75 18 8.75C18.1989 8.75 18.3897 8.82902 18.5303 8.96967C18.671 9.11032 18.75 9.30109 18.75 9.5V19C18.7474 19.1981 18.6676 19.3874 18.5275 19.5275C18.3874 19.6676 18.1981 19.7474 18 19.75Z" fill="#a0aec0"></path> <path d="M14 19.75C13.8019 19.7474 13.6126 19.6676 13.4725 19.5275C13.3324 19.3874 13.2526 19.1981 13.25 19V12.75H10.75V19C10.75 19.1989 10.671 19.3897 10.5303 19.5303C10.3897 19.671 10.1989 19.75 10 19.75C9.80109 19.75 9.61032 19.671 9.46967 19.5303C9.32902 19.3897 9.25 19.1989 9.25 19V12C9.25259 11.8019 9.33244 11.6126 9.47253 11.4725C9.61263 11.3324 9.80189 11.2526 10 11.25H14C14.1981 11.2526 14.3874 11.3324 14.5275 11.4725C14.6676 11.6126 14.7474 11.8019 14.75 12V19C14.7474 19.1981 14.6676 19.3874 14.5275 19.5275C14.3874 19.6676 14.1981 19.7474 14 19.75Z" fill="#a0aec0"></path> </g></svg>
+        </button>
         <nav class="flex iterms-center gap-4">
-            <a (click)="goToFeatures()" fragment="features" class="cursor-pointer text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200 ">Features</a>
-            <a (click)="goToPricing()" fragment="pricing" class="cursor-pointer text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200 ">Pricing</a>
+            <a (click)="goToFeatures()" fragment="features" class="cursor-pointer text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200 ">Características</a>
+            <a (click)="goToPricing()" fragment="pricing" class="cursor-pointer text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200 ">Precios</a>
         </nav>
     </header>
-    <aside class="bg-blue-300 py-4 flex items-center flex-col">
+    <aside class="bg-gradient-to-tr from-blue-400 to-blue-300 py-4 flex items-center flex-col">
         <button (click)="openNewProject()" class="gap-2 bg-gradient-to-r from-blue-500 to-cyan-400 w-40 py-2 rounded-lg text-white cursor-pointer flex items-center justify-center mr-2 text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">
-            <svg class="w-4 h-4 mt-1" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ffffff" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>plus-circle</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-464.000000, -1087.000000)" fill="#ffffff"> <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z" id="plus-circle" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg>
-            New project
+            <svg class="w-4 h-4" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ffffff" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>plus-circle</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-464.000000, -1087.000000)" fill="#ffffff"> <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z" id="plus-circle" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg>
+            Nuevo proyecto
         </button>
         <nav class="mt-6">
             <ul class="space-y-1">
                 <li>
-                    <a (click)="setFilter('all')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'all'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('all')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'all'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2h19L21 4.5l-19-1.5z"></path><path d="M19 19.5v-13"></path><path d="M5 19.5v-13"></path><path d="M2 19.5h20"></path></svg>
-                        <span>All projects</span>
+                        <span>Todos los proyectos</span>
                     </a>
                 </li>
                 <li>
-                    <a (click)="setFilter('your')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'your'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('your')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'your'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.4 5.4 0 017.5 3c1.74 0 3.41.81 4.5 2.09A5.4 5.4 0 0116.5 3c3.04 0 5.5 2.59 5.5 6.07 0 3.4-3.4 6.47-8.55 11.51L12 21.35z"></path></svg>
-                        <span>Your projects</span>
+                        <span>Tus proyectos</span>
                     </a>
                 </li>
                 <li>
-                    <a (click)="setFilter('shared')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'shared'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('shared')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'shared'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8l3 3-3 3"></path><path d="M17 11h-2"></path></svg>
-                        <span>Shared with you</span>
+                        <span>Compartidos contigo</span>
                     </a>
                 </li>
                 <li>
-                    <a (click)="setFilter('trashed')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'trashed'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 block px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
+                    <a (click)="setFilter('trashed')" [ngClass]="{'bg-gray-200 font-semibold text-gray-900': currentFilter === 'trashed'}" routerLinkActive="bg-gray-200 font-semibold" class="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer text-gray-700 hover:bg-emerald-50 transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"></path><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                        <span>Trashed projects</span>
+                        <span>Proyectos en la basura</span>
                     </a>
                 </li>
             </ul>
@@ -48,37 +50,33 @@
             </div>
         </div>
     </aside>
-    <main class="bg-gray-50 py-6 px-6 overflow-y-auto rounded-lg">
+    <main class="bg-white py-6 px-6 overflow-y-auto rounded-lg">
         <div class="flex items-center justify-between py-4">
 
             <div class="relative flex-grow">
-                <input type="text" placeholder="Search projects..." (keyup.enter)="filterProject($event)" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300">
+                <input type="text" placeholder="Buscar proyectos..." (keyup.enter)="filterProject($event)" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300">
             </div>
 
             <div class="flex items-center gap-4 ml-6">
-                <p class="text-sm text-gray-500 hidden sm:block">You're on the <span class="font-semibold">free plan</span></p>
-                <button class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg px-4 py-2 cursor-pointer text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">Upgrade</button>
+                <p class="text-sm text-gray-500 hidden sm:block">Estas en el <span class="font-semibold">plan gratis</span></p>
+                <button class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded-lg px-4 py-2 cursor-pointer text-sm font-medium shadow-md hover:from-teal-500 hover:to-green-600 transition-colors duration-300">Actualiza</button>
             </div>
         </div>
 
         <div class="flex items-center justify-between py-4 border-b border-gray-200">
-            <p class="text-lg font-semibold text-gray-800">{{ projects.length }} projects projects</p>
+            <p class="text-lg font-semibold text-gray-800">{{ projects.length }} proyectos</p>
 
-            <button class="flex items-center gap-2 px-4 py-2 rounded-lg border-gray-300 text-gray-700 hove:bg-gray-100 transition-colors duration-300">
-                <span class="text-sm font-medium">
-                    Actions
-                </span>
-            </button>
+
         </div>
 
         <div class="mt-6">
             <div class="grid grid-cols-4 gap-4 px-4 py-2 text-sm font-semibold text-gray-500 border-b border-gray-200">
-                <span>Title</span>
-                <span>Owner</span>
+                <span>Nombre</span>
+                <span>Creador</span>
                 <span class="flex items-center gap-1 cursor-pointer hover:text-gray-900 transition-colors duration-300">
-                    Last modified
+                    Ultima modificacion
                 </span>
-                <span>Actions</span>
+                <span>Acciones</span>
             </div>
         </div>
 
