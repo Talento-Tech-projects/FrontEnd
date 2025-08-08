@@ -55,6 +55,12 @@ export class BeamAnalysis implements AfterViewInit {
   isLoading: boolean = false;
   currentView: 'model' | 'results' = 'model';
 
+  isBeamSectionOpen: boolean = true;
+  isSupportsSectionOpen: boolean = true;
+  isLoadsSectionOpen: boolean = true;
+  isMomentsSectionOpen: boolean = true;
+  isDistLoadsSectionOpen: boolean = true;
+
   // --- Library Instances ---
   private Konva?: typeof Konva;
   private Chart?: typeof Chart;
@@ -82,6 +88,24 @@ export class BeamAnalysis implements AfterViewInit {
       }
     }
   }
+
+  toggleBeamSection(): void {
+    this.isBeamSectionOpen = !this.isBeamSectionOpen;
+  }
+
+  toggleSupportsSection(): void {
+    this.isSupportsSectionOpen = !this.isSupportsSectionOpen;
+  }
+  toggleLoadsSection(): void {
+    this.isLoadsSectionOpen = !this.isLoadsSectionOpen;
+  }
+  toggleMomentsSection(): void {
+    this.isMomentsSectionOpen = !this.isMomentsSectionOpen;
+  }
+  toggleDistLoadsSection(): void {
+    this.isDistLoadsSectionOpen = !this.isDistLoadsSectionOpen;
+  }
+
 
   showModelView(): void {
     this.currentView = 'model';
@@ -151,7 +175,7 @@ export class BeamAnalysis implements AfterViewInit {
   }
   
   resetModel(): void {
-    this.beamLength = 10; this.beamE = 210e9; this.beamI = 5e-6;
+    this.beamLength = 0; this.beamE = 210e9; this.beamI = 5e-6;
     this.supports = []; this.pointLoads = []; this.pointMoments = []; this.distributedLoads = [];
     this.results = null; this.errorResult = null; this.isLoading = false;
     this.destroyCharts();
@@ -226,7 +250,7 @@ export class BeamAnalysis implements AfterViewInit {
     });
 
     layer.draw();
-   const rulerY = beamY + 300; // Position the ruler below everything else
+   const rulerY = beamY + 150; // Position the ruler below everything else
 
     // 1. Draw the main axis line
     layer.add(new Konva.Line({
@@ -321,8 +345,7 @@ export class BeamAnalysis implements AfterViewInit {
       point_moments: this.pointMoments, distributed_loads: this.distributedLoads
     };
 
-    // --- ¡AQUÍ ESTÁ EL CAMBIO PRINCIPAL! ---
-    // Llamamos al método del servicio en lugar de usar http directamente.
+
     this.beamapiService.solveBeam(payload).pipe(
       finalize(() => {
         this.isLoading = false;
