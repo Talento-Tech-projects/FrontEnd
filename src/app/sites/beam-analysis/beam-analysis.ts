@@ -1,13 +1,22 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+// src/app/components/beam-analysis/beam-analysis.ts
+import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { isPlatformBrowser, CommonModule, KeyValuePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs'; 
-import { BeamApiService, BeamModelIn, DistributedLoadIn, PointLoadIn, PointMomentIn, SolverResultsOut, SupportIn, SupportTypeAPI } from '../../services/beam-api';
+import { ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs';
+import {
+  BeamApiService,
+  BeamModelIn,
+  DistributedLoadIn,
+  PointLoadIn,
+  PointMomentIn,
+  SolverResultsOut,
+  SupportIn,
+  SupportTypeAPI
+} from '../../services/beam-api';
 
 import type { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
 import type Konva from 'konva';
-
-
 
 @Component({
   selector: 'app-beam-analysis',
@@ -16,10 +25,11 @@ import type Konva from 'konva';
   templateUrl: './beam-analysis.html',
   styleUrls: ['./beam-analysis.css']
 })
-export class BeamAnalysis implements AfterViewInit {
+export class BeamAnalysis implements OnInit, AfterViewInit {
   private platformId = inject(PLATFORM_ID);
   private beamapiService = inject(BeamApiService);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
   @ViewChild('konvaContainer') konvaContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('shearChartCanvas') shearChartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -27,9 +37,10 @@ export class BeamAnalysis implements AfterViewInit {
   @ViewChild('deflectionChartCanvas') deflectionChartCanvas!: ElementRef<HTMLCanvasElement>;
   
   // --- Component State ---
+  beamId: number = 0;
   beamLength: number = 10;
-  beamE: number =  0 //0e9;
-  beamI: number = 0 //5e-6;
+  beamE: number =  0; // 0e9 placeholder
+  beamI: number = 0; // 5e-6 placeholder
   
   // --- Input Models ---
   supportPos: number = 0;
@@ -64,6 +75,35 @@ export class BeamAnalysis implements AfterViewInit {
   private momentChart?: Chart;
   private deflectionChart?: Chart;
   
+  // --- Lifecycle: ngOnInit: get beamId from route or localStorage ---
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam && idParam !== 'undefined' && idParam !== 'null') {
+        const parsed = Number(idParam);
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          this.beamId = parsed;
+          localStorage.setItem('beamId', this.beamId.toString());
+        }
+      } else {
+        const stored = localStorage.getItem('beamId');
+        if (stored) {
+          const parsed = Number(stored);
+          if (!Number.isNaN(parsed) && parsed > 0) {
+            this.beamId = parsed;
+          }
+        }
+      }
+
+      if (this.beamId > 0) {
+        this.loadBeamData();
+      } else {
+        // No ID yet - keep defaults (user can create or save later)
+        console.warn('No beamId found in route nor localStorage. Using defaults until user creates/saves a beam.');
+      }
+    });
+  }
+
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
       try {
@@ -81,6 +121,34 @@ export class BeamAnalysis implements AfterViewInit {
         this.errorResult = 'Error loading visualization libraries.';
       }
     }
+  }
+
+  // --- Load beam from backend and map fields defensively ---
+  private loadBeamData(): void {
+    if (!this.beamId || this.beamId <= 0) return;
+
+    this.beamapiService.getBeam(this.beamId).subscribe({
+      next: (res: any) => {
+        // Map possible field names that backend might return.
+        // Accept both `length` and `beamLength`, `E` or `e`, `I` or `i`.
+        this.beamLength = (res.length ?? res.beamLength ?? this.beamLength) as number;
+        this.beamE = (res.E ?? res.e ?? this.beamE) as number;
+        this.beamI = (res.I ?? res.i ?? this.beamI) as number;
+
+        // Supports / loads - backend may return different property names; try multiple common ones
+        this.supports = (res.supports ?? res.supportsList ?? res.supports_in ?? []) as SupportIn[];
+        this.pointLoads = (res.point_loads ?? res.pointLoads ?? []) as PointLoadIn[];
+        this.pointMoments = (res.point_moments ?? res.pointMoments ?? []) as PointMomentIn[];
+        this.distributedLoads = (res.distributed_loads ?? res.distributedLoads ?? []) as DistributedLoadIn[];
+
+        // redraw and detect changes
+        this.cdr.detectChanges();
+        setTimeout(() => this.redrawKonva(), 0);
+      },
+      error: (err) => {
+        console.error(`Error loading beam ${this.beamId}:`, err);
+      }
+    });
   }
 
   showModelView(): void {
@@ -160,6 +228,36 @@ export class BeamAnalysis implements AfterViewInit {
     this.currentView = 'model';
   }
 
+  saveModel(): void {
+    // Prevent accidental PUT /0
+    if (!this.beamId || this.beamId <= 0) {
+      alert('Error: Beam ID is not defined. Create the beam first or open it via its URL.');
+      return;
+    }
+
+    const beamDto: BeamModelIn = {
+      length: Number(this.beamLength),
+      E: Number(this.beamE),
+      I: Number(this.beamI),
+      supports: this.supports,
+      point_loads: this.pointLoads,
+      point_moments: this.pointMoments,
+      distributed_loads: this.distributedLoads
+    };
+
+    this.beamapiService.updateBeam(this.beamId, beamDto).subscribe({
+      next: (updatedBeam) => {
+        // keep beamId in localStorage
+        localStorage.setItem('beamId', String(this.beamId));
+        alert('Model saved successfully!');
+      },
+      error: (err) => {
+        console.error('Error saving model:', err);
+        alert(`Error saving model: ${err?.message || err}`);
+      }
+    });
+  }
+
   // --- UPDATED redrawKonva function with bigger icons ---
   redrawKonva(): void {
     const Konva = this.Konva, layer = this.layer, stage = this.stage;
@@ -183,7 +281,7 @@ export class BeamAnalysis implements AfterViewInit {
     
     // Supports with increased size
     this.supports.forEach(s => { 
-        const x = toPx(s.position); 
+        const x = toPx((s.position ?? 0) as number); 
         if (s.type === 'PINNED') { 
             layer.add(new Konva.Path({ x, y: beamY + 8, data: 'M 0 0 L -30 40 L 30 40 Z', fill: '#0BCDF4', stroke: 'black', strokeWidth: 1.5 })); 
         } else if (s.type === 'ROLLER') { 
@@ -196,16 +294,16 @@ export class BeamAnalysis implements AfterViewInit {
 
     // Point loads with increased size
     this.pointLoads.forEach(l => { 
-        const x = toPx(l.position); 
+        const x = toPx((l.position ?? 0) as number); 
         const arrowY = beamY - 60; // Increased distance from beam
         layer.add(new Konva.Arrow({ x, y: arrowY, points: [0, 0, 0, 50], pointerLength: 12, pointerWidth: 12, fill: 'red', stroke: 'darkred', strokeWidth: 2.5 })); 
     });
     
     // Point moments with increased size
     this.pointMoments.forEach(moment => {
-      const x = toPx(moment.position);
+      const x = toPx((moment.position ?? 0) as number);
       const radius = 40; // Increased radius
-      const isPositive = moment.magnitude > 0;
+      const isPositive = (moment.magnitude ?? 0) > 0;
       const startPointX = x, startPointY = beamY + radius + 15, endPointX = x, endPointY = beamY - radius + 15;
       const sweepFlag = isPositive ? 0 : 1;
       const arcPathData = `M ${startPointX} ${startPointY} A ${radius} ${radius} 0 0 ${sweepFlag} ${endPointX} ${endPointY}`;
@@ -216,7 +314,7 @@ export class BeamAnalysis implements AfterViewInit {
 
     // Distributed loads with increased size
     this.distributedLoads.forEach(dload => { 
-        const x1 = toPx(dload.start_position), x2 = toPx(dload.end_position); 
+        const x1 = toPx((dload.start_position ?? 0) as number), x2 = toPx((dload.end_position ?? 0) as number); 
         const arrowBaseY = beamY - 45; // Increased distance
         const shape = new Konva.Line({ points: [x1, arrowBaseY, x2, arrowBaseY, x2, beamY - 8, x1, beamY - 8], fill: 'rgba(255, 165, 0, 0.4)', stroke: 'orange', strokeWidth: 1, closed: true }); 
         layer.add(shape); 
@@ -226,7 +324,7 @@ export class BeamAnalysis implements AfterViewInit {
     });
 
     layer.draw();
-   const rulerY = beamY + 300; // Position the ruler below everything else
+    const rulerY = beamY + 300; // Position the ruler below everything else
 
     // 1. Draw the main axis line
     layer.add(new Konva.Line({
@@ -281,7 +379,6 @@ export class BeamAnalysis implements AfterViewInit {
     endLabel.x(endX - endLabel.width() / 2);
     layer.add(endLabel);
 
-
     // 4. Add the axis label "x (m)"
     layer.add(new Konva.Text({
         x: toPx(this.beamLength) + 15,
@@ -295,10 +392,7 @@ export class BeamAnalysis implements AfterViewInit {
     layer.draw();
   }
 
-
-
-
-   calculate(): void {
+  calculate(): void {
     if (this.beamLength <= 0 || this.beamE <= 0 || this.beamI <= 0) { 
       this.errorResult = 'Length, Young\'s Modulus, and Inertia must be positive values.'; 
       this.currentView = 'results';
@@ -321,8 +415,7 @@ export class BeamAnalysis implements AfterViewInit {
       point_moments: this.pointMoments, distributed_loads: this.distributedLoads
     };
 
-    // --- ¡AQUÍ ESTÁ EL CAMBIO PRINCIPAL! ---
-    // Llamamos al método del servicio en lugar de usar http directamente.
+    // Use beamapiService.solveBeam
     this.beamapiService.solveBeam(payload).pipe(
       finalize(() => {
         this.isLoading = false;

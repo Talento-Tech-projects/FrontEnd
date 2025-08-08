@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+// src/app/components/new-project/new-project.ts
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -11,18 +12,29 @@ import { Router } from '@angular/router';
   templateUrl: './new-project.html',
   styleUrl: './new-project.css'
 })
-export class NewProject implements OnChanges {
-  constructor(private http: HttpClient, private router: Router) {}
+export class NewProject implements OnChanges, OnInit {
+  beamId: number | null = null;
+  projectTitle: string = '';
 
-  @Input() visible: boolean = false;
-  @Input() editingProject: { id: number, title: string, owner: string, lastModified: string } | null = null;
+  @Input() visible = false;
+  @Input() editingProject: { id: number; title: string; owner: string; lastModified: string } | null = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() projectCreated = new EventEmitter<{ title: string }>();
-  @Output() projectUpdated = new EventEmitter<{ id: number, title: string }>();
+  @Output() projectUpdated = new EventEmitter<{ id: number; title: string }>();
 
-  @ViewChild('projectForm') projectForm: ElementRef | undefined;
-  projectTitle: string = '';
+  @ViewChild('projectForm') projectForm?: ElementRef;
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  ngOnInit(): void {
+    if (this.editingProject) {
+      const storedId = localStorage.getItem('beamId');
+      if (storedId) {
+        this.beamId = Number(storedId);
+      }
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['editingProject']) {
@@ -35,6 +47,7 @@ export class NewProject implements OnChanges {
     const trimmedTitle = this.projectTitle.trim();
     if (!trimmedTitle) return;
 
+    // Si es edición, solo emitimos el evento de actualización
     if (this.editingProject) {
       this.projectUpdated.emit({ id: this.editingProject.id, title: trimmedTitle });
       this.close.emit();
@@ -47,8 +60,9 @@ export class NewProject implements OnChanges {
       return;
     }
 
+    // Para creación no mandamos ID
     const beam = {
-      projectName: trimmedTitle,  // 👈 Aquí añadimos el nombre del proyecto
+      projectName: trimmedTitle,
       status: true,
       lastDate: new Date().toISOString(),
       beamLength: 10,
@@ -65,7 +79,7 @@ export class NewProject implements OnChanges {
       next: (res) => {
         console.log('✅ Viga creada:', res);
         localStorage.setItem('beamId', res.id.toString());
-        localStorage.setItem('beamData', JSON.stringify(res)); // 👈 Guardar también la viga completa
+        localStorage.setItem('beamData', JSON.stringify(res));
         this.close.emit();
         this.router.navigate(['/beam-analysis']);
       },
