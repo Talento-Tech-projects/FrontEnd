@@ -1,17 +1,17 @@
 
 export interface BeamDTO {
-  id: number | null;
+  id: number;
+  projectName: string; // Nombre del proyecto
   status: boolean;      // Estado (activo/inactivo)
   lastDate: string | Date;  // Fecha de la última actualización o acción (puede ser una fecha o string en formato ISO)
   beamLength: number;  // Longitud de la viga
-  E: number;           // Módulo de Young (E)
-  I: number;           // Momento de inercia (I)
+  e: number;           // Módulo de Young (E)
+  i: number;           // Momento de inercia (I)
   userId: number;      // ID del usuario
   supports: SupportDTO[];        // Soportes de la viga
   pointLoads: PointLoadDTO[];    // Cargas puntuales
   pointMoments: PointMomentDTO[]; // Momentos puntuales
   distributedLoads: DistributedLoadDTO[]; // Cargas distribuidas
-  
 }
 
 
